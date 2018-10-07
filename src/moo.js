@@ -6,53 +6,45 @@ export const commandPatterns = {
 
 export const lexer = moo.states({
   main: {
+    at: '@',
+    comma: ',',
+    lbracket: {match: '{', push: 'entryBody'},
+    lparen: {match: '(', push: 'entryBody'},
+    spaceHor: /[ \t]+/,
+    spaceVer: {match: /\s+/, lineBreaks: true},
     comment: /^(?:%|@comment(?=\W)).+$/,
-    entryStart: {
-      match: '@',
-      push: 'entryType'
-    },
-    entryDelimiter: /,/,
-    whitespace: {match: /\s+/, lineBreaks: true},
-    junk: {match: /^[^@].*$/, lineBreaks: true}
-  },
-  entryType: {
-    entryType: {
+    junk: {match: /^[^@].*$/, lineBreaks: true},
+    identifier: {
       match: /[A-Za-z]+/,
-      keywords: {
+      type: caseInsensitiveKeywords({
+        entryTypeRef: ['article', 'booklet', 'book', 'conference', 'inbook', 'incollection', 'inproceedings', 'manual', 'mastersthesis', 'misc', 'phdthesis', 'proceedings', 'techreport', 'unpunlished'],
         entryTypeString: 'string',
-        preambleTypeString: 'preamble'
-      }
-    },
-    entryBodyStart: {
-      match: '{',
-      next: 'entryBody'
-    },
-    whitespace: /[ \t]+/
+        entryTypePreamble: 'preamble'
+      })
+    }
   },
   entryBody: {
-    quoteStringStart: {match: '"', push: 'entryQuoteString'},
-    bracketStringStart: {match: '{', push: 'entryBracketString'},
+    quote: {match: '"', push: 'entryQuoteString'},
+    lbracket: {match: '{', push: 'entryBracketString'},
     number: /-?\d+(?:.\d+)?/,
     identifier: /[A-Za-z][-\w]*/,
     comma: ',',
-    concatOperator: '#',
+    hashtag: '#',
     equals: '=',
-    entryEnd: {
-      match: '}',
-      pop: true
-    },
+    rbracket: {match: '}', pop: true},
+    rparen: {match: ')', pop: true},
     comment: /%.*$/,
     whitespace: {match: /\s+/, lineBreaks: true}
   },
   entryQuoteString: {
-    quoteStringEnd: {match: '"', pop: true},
-    bracketStringStart: {match: '{', push: 'entryBracketString'},
+    quote: {match: '"', pop: true},
+    lbracket: {match: '{', push: 'entryBracketString'},
     text: {match: /[^"{}%]+/, lineBreaks: true},
     comment: {match: /%.*$/, lineBreaks: false}
   },
   entryBracketString: {
-    bracketStringStart: {match: '{', push: 'entryBracketString'},
-    bracketStringEnd: {match: '}', pop: true},
+    lbracket: {match: '{', push: 'entryBracketString'},
+    rbracket: {match: '}', pop: true},
     text: {match: /[^{}%]+/, lineBreaks: true},
     comment: {match: /%.*$/, lineBreaks: false}
   }
