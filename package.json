@@ -15,7 +15,7 @@
     "@babel/core": "^7.1.2",
     "@babel/polyfill": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
-    "moo": "^0.4.3"
+    "moo": "github:no-context/moo#master"
   },
   "devDependencies": {
     "@babel/register": "^7.0.0"
