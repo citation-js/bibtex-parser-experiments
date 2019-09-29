@@ -4,6 +4,8 @@
 
 import TokenStack from './stack'
 
+const logger = console
+
 /**
  * Mapping of BibTeX Escaped Chars to Unicode.
  *
@@ -121,7 +123,8 @@ const parseBibTeX = function (str) {
           } else if (token.match(/^\\[#$%&~_^\\{}]$/)) {
             return token.slice(1)
           } else if (token.length > 1) {
-            throw new SyntaxError(`Escape sequence not recognized: ${token}`)
+            // throw new SyntaxError(`Escape sequence not recognized: ${token}`)
+            return token
           } else {
             return token
           }
@@ -159,7 +162,7 @@ const parseBibTeX = function (str) {
 
       stack.consumeToken('}', {spaced: false})
       stack.consumeWhitespace()
-            
+
       // records can be also ended with comma
       if (stack.matches(',')) {
         stack.consumeToken(',')
