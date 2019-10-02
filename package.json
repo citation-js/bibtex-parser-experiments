@@ -1,23 +1,32 @@
 {
-  "name": "parser-experiment",
+  "name": "bibtex-parser-experiment",
   "private": true,
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "Experiments to determine the new BibTeX parser formula -- to be applied to other formats as well",
+  "main": "dev.js",
   "scripts": {
-    "babel": "babel src -d lib --copy-files"
+    "babel": "babel src -d lib --copy-files",
+    "astrocite": "pegjs src/astrocite/grammar.pegjs",
+    "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "bibtex",
+    "parser",
+    "grammar",
+    "pegjs",
+    "nearley"
+  ],
+  "author": "Lars Willighagen",
+  "license": "MIT",
   "dependencies": {
-    "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.2",
-    "@babel/polyfill": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "moo": "github:no-context/moo#master"
+    "moo": "^0.5.1"
   },
   "devDependencies": {
-    "@babel/register": "^7.0.0"
+    "@babel/cli": "^7.6.2",
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.2",
+    "@babel/register": "^7.6.2",
+    "nearley": "^2.19.0",
+    "pegjs": "^0.10.0"
   }
 }
