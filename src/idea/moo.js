@@ -1,8 +1,46 @@
 import moo from 'moo'
 
-export const commandPatterns = {
-
+// see https://github.com/no-context/moo/pull/85
+function caseInsensitiveKeywords (map) {
+  let transform = moo.keywords(map)
+  return text => transform(text.toLowerCase())
 }
+
+/*
+// Adpated from [Astrocite BibTeX](https://github.com/dsifford/astrocite/blob/668a9e4a0cb15a21a310d38e6e3f9ec5af7db9a0/packages/astrocite-bibtex/src/constants.ts#L6-L22)
+// Accessed 2018-02-18
+const diacritics = {
+  '`': '\u0300',
+  '\'': '\u0301',
+  '^': '\u0302',
+  '~': '\u0303',
+  '=': '\u0304',
+  '\'': '\u0308',
+  'c': '\u0327',
+  'b': '\u0331',
+  'u': '\u0306',
+  'v': '\u030c',
+  '.': '\u0307',
+  'd': '\u0323',
+  'r': '\u030a',
+  'H': '\u030b',
+  'k': '\u0328'
+}
+
+const math = {match: /$.+?$/, }
+const command ={match: /\\[A-Za-z]+/, }
+const diacriticExtra = {
+  match: /\\[`'"^=~.](?:{(?:\\[a-z]+|[a-z])}|(?:\\[a-z]+|[a-z]))/i,
+  value: () => ``
+}
+const diacriticExtra = {
+  match: /\\[bcdHkruv](?:{(?:\\[a-z]+|[a-z])}|\\[a-z]+| [a-z])/i,
+  value: () => ``
+}
+const symbol = {
+  match: ['---', '--', '\'\'\'', '\'\'', '```', '``', '!!', '?!', '!?', 'TEL', '\\~', '~'],
+
+}*/
 
 export const lexer = moo.states({
   main: {
@@ -15,7 +53,7 @@ export const lexer = moo.states({
     comment: /^(?:%|@comment(?=\W)).+$/,
     junk: {match: /^[^@].*$/, lineBreaks: true},
     identifier: {
-      match: /[A-Za-z]+/,
+      match: /[^\s{}()]+/,
       type: caseInsensitiveKeywords({
         entryTypeRef: ['article', 'booklet', 'book', 'conference', 'inbook', 'incollection', 'inproceedings', 'manual', 'mastersthesis', 'misc', 'phdthesis', 'proceedings', 'techreport', 'unpunlished'],
         entryTypeString: 'string',
@@ -27,7 +65,7 @@ export const lexer = moo.states({
     quote: {match: '"', push: 'entryQuoteString'},
     lbracket: {match: '{', push: 'entryBracketString'},
     number: /-?\d+(?:.\d+)?/,
-    identifier: /[A-Za-z][-\w]*/,
+    identifier: /[A-Za-z][-\w:]*/,
     comma: ',',
     hashtag: '#',
     equals: '=',

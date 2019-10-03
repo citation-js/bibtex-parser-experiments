@@ -1,4 +1,4 @@
-import {lexer} from '../moo'
+import {lexer} from './moo'
 import {Grammar} from './grammar'
 
 // Adapted from AstroCite BibTeX (accessed 2018-02-22)
@@ -50,10 +50,17 @@ export const bibtexGrammar = new Grammar({
   },
 
   Junk () {
+    let oldIndex = this.index
+
     while (!this.matchToken('at')) {
       this.consumeToken('spaceVer', true)
       this.consumeToken('comment', true)
       this.consumeToken('junk', true)
+    }
+
+    if (this.index === oldIndex) {
+      // TODO: trigger error
+      this.consumeToken('at')
     }
   },
 
@@ -163,7 +170,7 @@ export const bibtexGrammar = new Grammar({
     let output = ''
     this.consumeToken('lbracket')
     while (!this.matchToken('rbracket')) {
-      this.consumeRule('Text')
+      output += this.consumeRule('Text')
     }
     this.consumeToken('rbracket')
     return output
@@ -177,7 +184,7 @@ export const bibtexGrammar = new Grammar({
     } else if (this.matchToken('text')) {
       return this.consumeToken('text').value
     } else {
-      // do nothing
+      return ''
     }
   }
 }, {
