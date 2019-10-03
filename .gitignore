@@ -2,6 +2,7 @@
 /lib
 
 /src/astrocite
+/src/nearley/grammar.js
 *.old*
 
 /dev.js
