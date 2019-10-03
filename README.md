@@ -8,10 +8,10 @@ to other formats as well in the future.
 |                                       | Time (single entry) | Time (3345 entries) | Syntax |
 |---------------------------------------|--------------------:|--------------------:|--------|
 | [Current](/src/current)               |                ~8ms |             ~1800ms | old    |
-| [astrocite](/src/astrocite)¹          |                ~9ms |             ~1670ms | new²   |
+| [PEG.js](/src/astrocite) (astrocite)¹ |                ~9ms |             ~1670ms | new²   |
 | [Idea](/src/idea)                     |                ~2ms |             ~1150ms | old    |
 | [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
-| [nearley](/src/nearley)³              |               ~70ms |                N/A⁴ | new    |
+| [nearley](/src/nearley) (self-made)   |              ~70ms³ |               N/A³⁴ | new    |
 
 ¹ Only creates an AST, not a JSON representation of the data itself  
 ² Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
