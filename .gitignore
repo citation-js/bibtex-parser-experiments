@@ -1,3 +1,9 @@
 /node_modules
 /lib
+
+/src/astrocite
+*.old*
+
 /dev.js
+/normal_long.bib
+/test.html
