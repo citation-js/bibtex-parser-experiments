@@ -11,12 +11,14 @@ to other formats as well in the future.
 | [PEG.js](/src/astrocite) (astrocite)¹ |                ~9ms |             ~1670ms | new²   |
 | [Idea](/src/idea)                     |                ~2ms |             ~1150ms | old    |
 | [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
-| [nearley](/src/nearley) (self-made)   |              ~20ms³ |               N/A³⁴ | new    |
+| [nearley](/src/nearley) (self-made)   |              ~20ms³ |              N/A³ ⁴ | new    |
+| [fiduswriter](/src/fiduswriter)       |              ~160ms |                N/A⁵ | new    |
 
 ¹ Only creates an AST, not a JSON representation of the data itself  
 ² Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ³ I fully expect this to be my fault, not nearley's  
 ⁴ Causes an `Allocation failed - JavaScript heap out of memory` error  
+⁵ Does not seem to terminate within 30 seconds  
 
 ### Current
 

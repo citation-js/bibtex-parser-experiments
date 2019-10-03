@@ -19,6 +19,7 @@
   "author": "Lars Willighagen",
   "license": "MIT",
   "dependencies": {
+    "biblatex-csl-converter": "^1.6.9",
     "moo": "^0.5.1"
   },
   "devDependencies": {
