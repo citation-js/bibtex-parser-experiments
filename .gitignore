@@ -1,7 +1,7 @@
 /node_modules
 /lib
 
-/src/astrocite
+/src/astrocite/grammar.js
 /src/nearley/grammar.js
 *.old*
 
