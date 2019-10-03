@@ -50,15 +50,16 @@ export const bibtexGrammar = new Grammar({
   },
 
   Junk () {
-    let oldIndex = this.index
+    let oldIndex
 
-    while (!this.matchToken('at')) {
+    while (oldIndex !== this.index) {
+      oldIndex = this.index
       this.consumeToken('spaceVer', true)
       this.consumeToken('comment', true)
       this.consumeToken('junk', true)
     }
 
-    if (this.index === oldIndex) {
+    if (!this.matchToken('at') && !this.matchEndOfFile()) {
       // TODO: trigger error
       this.consumeToken('at')
     }
@@ -102,26 +103,23 @@ export const bibtexGrammar = new Grammar({
     let properties = {}
     this.consumeToken('whitespace', true)
 
-    if (!this.matchToken('identifier')) {
-      return properties
-    }
-
-    do {
+    while (this.matchToken('identifier')) {
       let [field, value] = this.consumeRule('Field')
       properties[field] = value
+      this.consumeToken('whitespace', true)
 
       if (this.consumeToken('comma', true)) {
         this.consumeToken('whitespace', true)
       } else {
         break
       }
-    } while (this.matchToken('identifier'))
+    }
 
     return properties
   },
 
   Field () {
-    let field = this.consumeToken('identifier')
+    let field = this.consumeToken('identifier').value
 
     this.consumeToken('whitespace', true)
     this.consumeToken('equals')
@@ -150,7 +148,7 @@ export const bibtexGrammar = new Grammar({
 
   ExpressionPart () {
     if (this.matchToken('identifier')) {
-      return strings[this.consumeToken('identifier')]
+      return this.state.strings[this.consumeToken('identifier').value]
     } else {
       return this.consumeAnyRule(['QuoteString', 'BracketString'])
     }

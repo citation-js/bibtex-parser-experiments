@@ -19,11 +19,11 @@ export class Grammar {
   }
 
   matchToken (type) {
-    return type === this.tokens[this.index].type
+    return this.tokens[this.index] && type === this.tokens[this.index].type
   }
 
   matchTokens (types) {
-    return types.every((type, i) => type === this.tokens[this.index + i])
+    return types.every((type, i) => type === this.tokens[this.index + i] && this.tokens[this.index + i].type)
   }
 
   consumeToken (type, optional) {
@@ -35,7 +35,7 @@ export class Grammar {
     } else if (optional) {
       return undefined
     } else {
-      throw new Error(this.lexer.formatError(token, `expected "${type}", got "${token.type}"`))
+      throw new Error(this.lexer.formatError(token, `expected "${type}", got "${token ? token.type : 'EOF'}"`))
     }
   }
 
@@ -61,10 +61,10 @@ export class Grammar {
         return value
       } catch (error) {
         errors.push(error)
-        this.index = oldIndex
       }
     }
 
+    this.index = oldIndex
     throw errors[errors.length - 1]
   }
 }

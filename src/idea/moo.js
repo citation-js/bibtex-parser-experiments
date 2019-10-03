@@ -55,7 +55,23 @@ export const lexer = moo.states({
     identifier: {
       match: /[^\s{}()]+/,
       type: caseInsensitiveKeywords({
-        entryTypeRef: ['article', 'booklet', 'book', 'conference', 'inbook', 'incollection', 'inproceedings', 'manual', 'mastersthesis', 'misc', 'phdthesis', 'proceedings', 'techreport', 'unpunlished'],
+        entryTypeRef: [
+          'article',
+          'booklet',
+          'book',
+          'conference',
+          'electronic',
+          'inbook',
+          'incollection',
+          'inproceedings',
+          'manual',
+          'mastersthesis',
+          'misc',
+          'phdthesis',
+          'proceedings',
+          'techreport',
+          'unpublished'
+        ],
         entryTypeString: 'string',
         entryTypePreamble: 'preamble'
       })
@@ -64,8 +80,8 @@ export const lexer = moo.states({
   entryBody: {
     quote: {match: '"', push: 'entryQuoteString'},
     lbracket: {match: '{', push: 'entryBracketString'},
+    identifier: /[^\s=,{}()"]+/,
     number: /-?\d+(?:.\d+)?/,
-    identifier: /[A-Za-z][-\w:]*/,
     comma: ',',
     hashtag: '#',
     equals: '=',
@@ -77,13 +93,13 @@ export const lexer = moo.states({
   entryQuoteString: {
     quote: {match: '"', pop: true},
     lbracket: {match: '{', push: 'entryBracketString'},
-    text: {match: /[^"{}%]+/, lineBreaks: true},
-    comment: {match: /%.*$/, lineBreaks: false}
+    text: {match: /[^"{}]+/, lineBreaks: true},
+    // comment: {match: /%.*$/, lineBreaks: false}
   },
   entryBracketString: {
     lbracket: {match: '{', push: 'entryBracketString'},
     rbracket: {match: '}', pop: true},
-    text: {match: /[^{}%]+/, lineBreaks: true},
-    comment: {match: /%.*$/, lineBreaks: false}
+    text: {match: /[^{}]+/, lineBreaks: true},
+    // comment: {match: /%.*$/, lineBreaks: false}
   }
 })
