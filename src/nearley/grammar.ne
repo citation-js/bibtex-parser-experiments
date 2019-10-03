@@ -1,11 +1,13 @@
 @{%
   const moo = require('moo')
 
-  const whitespace = { match: /\s+/, lineBreaks: true }
   const identifier = /[a-zA-Z][a-zA-Z0-9_-]*/
+  const whitespace = {
+    comment: /%.*/,
+    whitespace: { match: /\s+/, lineBreaks: true }
+  }
   const text = {
-    command: /\\[a-z]+ ?/,
-    escape: /\\./,
+    command: /\\(?:[a-z]+ ?|.)/,
     lbrace: { match: '{', push: 'bracedLiteral' },
     mathShift: { match: '$', push: 'mathLiteral' },
     whitespace: { match: /\s+/, lineBreaks: true }
@@ -17,23 +19,33 @@
       at: { match: '@', push: 'entry' }
     },
     entry: {
-      whitespace,
-      entryType: identifier,
-      lbrace: { match: /[{(]/, next: 'entryContents' }
+      ...whitespace,
+      otherEntryType: {
+        match: /[sS][tT][rR][iI][nN][gG]|[pP][rR][eE][aA][mM][bB][lL][eE]/,
+        next: 'otherEntryContents'
+      },
+      dataEntryType: {
+        match: identifier,
+        next: 'dataEntryContents'
+      },
     },
-    entryContents: {
-      whitespace,
+    otherEntryContents: {
+      ...whitespace,
+      lbrace: { match: /[{(]/, next: 'fields' }
+    },
+    dataEntryContents: {
+      ...whitespace,
+      lbrace: { match: /[{(]/, next: 'dataEntryContents' },
       label: /[^,\s]+/,
       comma: { match: ',', next: 'fields' }
     },
     fields: {
-      whitespace,
+      ...whitespace,
       identifier,
       number: /-?\d+/,
       hash: '#',
       equals: '=',
       comma: ',',
-      comment: /%.*/,
       quote: { match: '"', push: 'quotedLiteral' },
       lbrace: { match: '{', push: 'bracedLiteral' },
       rbrace: { match: /[})]/, pop: true }
@@ -41,12 +53,12 @@
     quotedLiteral: {
       ...text,
       quote: { match: '"', pop: true },
-      text: /./
+      text: /[^{$"\s\\]+/
     },
     bracedLiteral: {
       ...text,
       rbrace: { match: '}', pop: true },
-      text: /./
+      text: /[^{$}\s\\]+/
     },
     mathLiteral: {
       ...text,
@@ -63,7 +75,7 @@ entry -> (stringEntry | preambleEntry | dataEntry)      {% tokens => tokens[0][0
 
 stringEntry   -> %at _ "string" _ %lbrace _ field _ %rbrace
 preambleEntry -> %at _ "preamble" _ %lbrace _ expression _ %rbrace
-dataEntry     -> %at _ %entryType _ %lbrace _ %label _ %comma _ fields _ %rbrace {%
+dataEntry     -> %at _ %dataEntryType _ %lbrace _ %label _ %comma _ fields _ %rbrace {%
   function (tokens) {
     return {
       type: tokens[2].value,
