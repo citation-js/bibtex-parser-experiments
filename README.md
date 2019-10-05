@@ -38,8 +38,8 @@ I made some unnecessarily complicated features like `consumeAnyRule()`, and some
 weird loops in the rules. This was partly due to bad tokenization.
 
 The reworked version has new tokens, a simpler `Grammar` class and simplified
-rules. It also has more features, except for the commands & diacritics — that's
-still a work in progress.
+rules. It also has more features, including more commands and diacritics, including
+more ways to write them.
 
 ### nearley
 
@@ -48,3 +48,9 @@ which failed miserably. As I mentioned in the footnotes of the table, this is
 probably the result of bad grammar-writing on my part. However, an additional
 downside of this route is that it introduces an extra build step — `nearleyc` —
 and a runtime dependency — `nearley` itself.
+
+### fiduswriter
+
+Fiduswriter's `biblatex-csl-converter` seems to perform very poorly on the larger
+file, and that is just with the npm package, not a copied, self-built grammar like
+with `astrocite-bibtex`.
