@@ -1,5 +1,6 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
+import * as constants from './constants'
 
 const identifier = /[a-zA-Z][a-zA-Z0-9_-]*/
 const whitespace = {
@@ -7,7 +8,7 @@ const whitespace = {
   whitespace: { match: /\s+/, lineBreaks: true }
 }
 const text = {
-  command: /\\(?:[a-z]+ ?|.)/,
+  command: /\\(?:[a-z]+|.) */,
   lbrace: { match: '{', push: 'bracedLiteral' },
   mathShift: { match: '$', push: 'mathLiteral' },
   whitespace: { match: /\s+/, lineBreaks: true }
@@ -62,47 +63,11 @@ const lexer = moo.states({
   },
   mathLiteral: {
     ...text,
-    matchShift: { match: '$', pop: true },
-    text: /./
+    mathShift: { match: '$', pop: true },
+    script: /[\^_]/,
+    text: /[^{$}\s\\\^_]+/
   }
 })
-
-// Adapted from AstroCite BibTeX (accessed 2018-02-22)
-// https://github.com/dsifford/astrocite/blob/668a9e4/packages/astrocite-bibtex/src/constants.ts#L112-L148
-export const defaultStrings = {
-  jan: '01',
-  feb: '02',
-  mar: '03',
-  apr: '04',
-  may: '05',
-  jun: '06',
-  jul: '07',
-  aug: '08',
-  sep: '09',
-  oct: '10',
-  nov: '11',
-  dec: '12',
-  acmcs: 'ACM Computing Surveys',
-  acta: 'Acta Informatica',
-  cacm: 'Communications of the ACM',
-  ibmjrd: 'IBM Journal of Research and Development',
-  ibmsj: 'IBM Systems Journal',
-  ieeese: 'IEEE Transactions on Software Engineering',
-  ieeetc: 'IEEE Transactions on Computers',
-  ieeetcad: 'IEEE Transactions on Computer-Aided Design of Integrated Circuits',
-  ipl: 'Information Processing Letters',
-  jacm: 'Journal of the ACM',
-  jcss: 'Journal of Computer and System Sciences',
-  scp: 'Science of Computer Programming',
-  sicomp: 'SIAM Journal on Computing',
-  tocs: 'ACM Transactions on Computer Systems',
-  tods: 'ACM Transactions on Database Systems',
-  tog: 'ACM Transactions on Graphics',
-  toms: 'ACM Transactions on Mathematical Software',
-  toois: 'ACM Transactions on Office Information Systems',
-  toplas: 'ACM Transactions on Programming Languages and Systems',
-  tcs: 'Theoretical Computer Science'
-}
 
 const delimiters = {
   '(': ')',
@@ -259,7 +224,13 @@ export const bibtexGrammar = new Grammar({
     let output = ''
     this.consumeToken('mathShift')
     while (!this.matchToken('mathShift')) {
-      output += this.consumeRule('Text') // TODO %text handling
+      if (this.matchToken('script')) {
+        const script = this.consumeToken('script').value
+        const text = this.consumeRule('Text').replace(/^{|}$/g, '')
+        output += constants.mathScripts[script][text[0]] + text.slice(1)
+      } else {
+        output += this.consumeRule('Text')
+      }
     }
     this.consumeToken('mathShift')
     return output
@@ -267,21 +238,53 @@ export const bibtexGrammar = new Grammar({
 
   Text () {
     if (this.matchToken('lbrace')) {
-      return this.consumeRule('BracketString')
+      return `{${this.consumeRule('BracketString')}}`
+
     } else if (this.matchToken('mathShift')) {
       return this.consumeRule('MathString')
+
     } else if (this.matchToken('whitespace')) {
-      return this.consumeToken('whitespace').value
+      this.consumeToken('whitespace')
+      return ' '
+
     } else if (this.matchToken('command')) {
-      return this.consumeToken('command').value // TODO
-    } else if (this.matchToken('text')) {
-      return this.consumeToken('text').value
+      return this.consumeRule('Command')
+
     } else {
-      return this.consumeToken('text')
+      return this.consumeToken('text').value.replace(
+        constants.ligaturePattern,
+        ligature => constants.ligatures[ligature]
+      )
+    }
+  },
+
+  Command () {
+    const command = this.consumeToken('command').value.slice(1).trimEnd()
+
+    // command
+    if (command in constants.commands) {
+      return constants.commands[command]
+
+    // diacritics
+    } else if (command in constants.diacritics && !this.matchEndOfFile()) {
+      if (this.matchToken('text')) {
+        const text = this.consumeToken('text').value
+        return text[0] + constants.diacritics[command] + text.slice(1)
+      } else {
+        return this.consumeRule('Text') + constants.diacritics[command]
+      }
+
+    // escapes
+    } else if (/^\W$/.test(command)) {
+      return command
+
+    // unknown commands
+    } else {
+      return '\\' + command
     }
   }
 }, {
-  strings: Object.assign({}, defaultStrings)
+  strings: Object.assign({}, constants.defaultStrings)
 })
 
 export function parse (text) {
