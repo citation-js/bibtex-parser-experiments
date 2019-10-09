@@ -13,12 +13,14 @@ to other formats as well in the future.
 | [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
 | [nearley](/src/nearley) (self-made)   |              ~20ms³ |              N/A³ ⁴ | new    |
 | [fiduswriter](/src/fiduswriter)       |              ~160ms |                N/A⁵ | new    |
+| [Zotero](/src/zotero)⁶                |              ~177ms |            ~31000ms | old    |
 
 ¹ Only creates an AST, not a JSON representation of the data itself  
 ² Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ³ I fully expect this to be my fault, not nearley's  
 ⁴ Causes an `Allocation failed - JavaScript heap out of memory` error  
 ⁵ Does not seem to terminate within 30 seconds  
+⁶ Converts to Zotero API JSON format
 
 ### Current
 
@@ -54,3 +56,10 @@ and a runtime dependency — `nearley` itself.
 Fiduswriter's `biblatex-csl-converter` seems to perform very poorly on the larger
 file, and that is just with the npm package, not a copied, self-built grammar like
 with `astrocite-bibtex`.
+
+### Zotero
+
+Zotero Translators are notoriously hard to use stand-alone, as they depend on a
+Zotero framework in the global scope. Additionally, it converts to Zotero API JSON
+while parsing the syntax. This results in it only returning 3322 entries, as it
+does not recognise the BibLaTeX-only `@electronic` type.

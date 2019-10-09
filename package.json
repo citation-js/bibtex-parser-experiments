@@ -20,7 +20,8 @@
   "license": "MIT",
   "dependencies": {
     "biblatex-csl-converter": "^1.6.9",
-    "moo": "^0.5.1"
+    "moo": "^0.5.1",
+    "translation-server": "git+https://github.com/zotero/translation-server.git"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.2",
