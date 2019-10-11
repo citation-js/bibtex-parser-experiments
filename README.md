@@ -12,15 +12,14 @@ to other formats as well in the future.
 | [Idea](/src/idea)                     |                ~2ms |             ~1150ms | old    |
 | [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
 | [nearley](/src/nearley) (self-made)   |              ~20ms³ |              N/A³ ⁴ | new    |
-| [fiduswriter](/src/fiduswriter)       |              ~160ms |                N/A⁵ | new    |
-| [Zotero](/src/zotero)⁶                |              ~177ms |            ~31000ms | old    |
+| [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | new    |
+| [Zotero](/src/zotero)⁵                |              ~177ms |            ~31000ms | old    |
 
 ¹ Only creates an AST, not a JSON representation of the data itself  
 ² Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ³ I fully expect this to be my fault, not nearley's  
 ⁴ Causes an `Allocation failed - JavaScript heap out of memory` error  
-⁵ Does not seem to terminate within 30 seconds  
-⁶ Converts to Zotero API JSON format
+⁵ Converts to Zotero API JSON format
 
 ### Current
 
@@ -54,8 +53,7 @@ and a runtime dependency — `nearley` itself.
 ### fiduswriter
 
 Fiduswriter's `biblatex-csl-converter` seems to perform very poorly on the larger
-file, and that is just with the npm package, not a copied, self-built grammar like
-with `astrocite-bibtex`.
+file.
 
 ### Zotero
 
