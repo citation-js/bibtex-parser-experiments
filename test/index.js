@@ -15,6 +15,7 @@ const parsers = [
 async function time (name, func, ...args) {
   const start = Date.now()
   try {
+    global.console.error = message => { throw new SyntaxError(message) }
     await func(...args)
     return `${Date.now() - start}ms`
   } catch (e) {
@@ -60,7 +61,7 @@ async function main () {
 }
 
 const console = global.console
-global.console = { log () {}, error () {} }
+global.console = {}
 
 main()
   .then(console.table)
