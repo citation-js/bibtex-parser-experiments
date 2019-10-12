@@ -163,7 +163,7 @@ export const bibtexGrammar = new Grammar({
   },
 
   Field () {
-    const field = this.consumeToken('identifier')
+    const field = this.consumeToken('identifier').value.toLowerCase()
 
     this.consumeRule('_')
     this.consumeToken('equals')
@@ -190,7 +190,7 @@ export const bibtexGrammar = new Grammar({
 
   ExpressionPart () {
     if (this.matchToken('identifier')) {
-      return this.state.strings[this.consumeToken('identifier').value] || ''
+      return this.state.strings[this.consumeToken('identifier').value.toLowerCase()] || ''
     } else if (this.matchToken('number')) {
       return parseInt(this.consumeToken('number'))
     } else if (this.matchToken('quote')){
