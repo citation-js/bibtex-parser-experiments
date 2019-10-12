@@ -8,7 +8,8 @@ const parsers = [
   'idea-reworked',
   'astrocite',
   'fiduswriter',
-  'zotero'
+  'zotero',
+  'bbt'
 ]
 
 async function time (name, func, ...args) {
