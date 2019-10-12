@@ -11,7 +11,6 @@ export async function init () {
 }
 
 export async function parse (text) {
-  await init()
   const translate = new Translate.Import()
   translate.setString(text)
   const translators = await translate.getTranslators()
