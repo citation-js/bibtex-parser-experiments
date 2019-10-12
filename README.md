@@ -19,8 +19,8 @@ to other formats as well in the future.
 ¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ² I fully expect this to be my fault, not nearley's  
 ³ Causes an `Allocation failed - JavaScript heap out of memory` error  
-⁴ Converts to Zotero API JSON format
-⁵ Misses some diacritics and chained concatenations
+⁴ Converts to Zotero API JSON format  
+⁵ Misses some diacritics and chained concatenations  
 
 ### Current
 
