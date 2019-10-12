@@ -2,7 +2,7 @@ import moo from 'moo'
 import { Grammar } from './grammar'
 import * as constants from './constants'
 
-const identifier = /[a-zA-Z][a-zA-Z0-9_-]*/
+const identifier = /[a-zA-Z][a-zA-Z0-9_:-]*/
 const whitespace = {
   comment: /%.*/,
   whitespace: { match: /\s+/, lineBreaks: true }
