@@ -5,21 +5,22 @@ to other formats as well in the future.
 
 ## Results
 
-|                                       | Time (single entry) | Time (3345 entries) | Syntax |
-|---------------------------------------|--------------------:|--------------------:|--------|
-| [Current](/src/current)               |                ~8ms |             ~1800ms | old    |
-| [PEG.js](/src/astrocite) (astrocite)  |                ~9ms |             ~1670ms | new¹   |
-| [Idea](/src/idea)                     |                ~2ms |             ~1150ms | old    |
-| [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
-| [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | new    |
-| [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | new    |
-| [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | old    |
-| [Better BibTeX (BBT)](/src/btt)       |               ~15ms |            ~14000ms | new    |
+|                                       | Time (single entry) | Time (3345 entries) | Syntax    |
+|---------------------------------------|--------------------:|--------------------:|-----------|
+| [Current](/src/current)               |                ~8ms |             ~1800ms | basic     |
+| [PEG.js](/src/astrocite) (astrocite)  |                ~9ms |             ~1670ms | complete¹ |
+| [Idea](/src/idea)                     |                ~2ms |             ~1150ms | basic     |
+| [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | complete  |
+| [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | basic     |
+| [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | complete  |
+| [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | basic     |
+| [Better BibTeX (BBT)](/src/bbt)       |               ~15ms |            ~14000ms | complete⁵ |
 
 ¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ² I fully expect this to be my fault, not nearley's  
 ³ Causes an `Allocation failed - JavaScript heap out of memory` error  
 ⁴ Converts to Zotero API JSON format
+⁵ Misses some diacritics and chained concatenations
 
 ### Current
 
