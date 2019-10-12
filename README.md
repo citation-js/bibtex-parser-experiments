@@ -14,6 +14,7 @@ to other formats as well in the future.
 | [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | new    |
 | [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | new    |
 | [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | old    |
+| [Better BibTeX (BBT)](/src/btt)       |               ~15ms |            ~14000ms | new    |
 
 ¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ² I fully expect this to be my fault, not nearley's  
@@ -60,3 +61,7 @@ Zotero Translators are notoriously hard to use stand-alone, as they depend on a
 Zotero framework in the global scope. Additionally, it converts to Zotero API JSON
 while parsing the syntax. This results in it only returning 3322 entries, as it
 does not recognise the BibLaTeX-only `@electronic` type.
+
+### Better BibTeX for Zotero (BBT)
+
+Using `@retorquere/bibtex-parser`, this performs pretty okay.
