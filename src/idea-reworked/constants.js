@@ -37,6 +37,9 @@ export const defaultStrings = {
 
 // Adapted from astrocite-bibtex (accessed 2019-10-05)
 // https://github.com/dsifford/astrocite/blob/e7f336f/packages/astrocite-bibtex/src/constants.ts#L3-L22
+// and
+// WikiBooks (accessed 2019-10-13)
+// https://en.wikibooks.org/wiki/LaTeX/Special_Characters#Escaped_codes
 export const diacritics = {
   '`': '\u0300',
   "'": '\u0301',
@@ -52,7 +55,8 @@ export const diacritics = {
   'd': '\u0323',
   'r': '\u030A',
   'H': '\u030B',
-  'k': '\u0328'
+  'k': '\u0328',
+  't': '\u0361'
 }
 
 export const commands = {
