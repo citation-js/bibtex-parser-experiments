@@ -7,7 +7,8 @@
   "scripts": {
     "babel": "babel src -d lib --copy-files",
     "astrocite": "pegjs src/astrocite/grammar.pegjs",
-    "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne"
+    "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne",
+    "test": "node ./test/"
   },
   "keywords": [
     "bibtex",
@@ -21,6 +22,7 @@
   "dependencies": {
     "biblatex-csl-converter": "^1.6.9",
     "moo": "^0.5.1",
+    "nearley": "^2.19.0",
     "translation-server": "git+https://github.com/zotero/translation-server.git"
   },
   "devDependencies": {
@@ -28,7 +30,6 @@
     "@babel/core": "^7.6.2",
     "@babel/preset-env": "^7.6.2",
     "@babel/register": "^7.6.2",
-    "nearley": "^2.19.0",
     "pegjs": "^0.10.0"
   }
 }
