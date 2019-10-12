@@ -8,18 +8,17 @@ to other formats as well in the future.
 |                                       | Time (single entry) | Time (3345 entries) | Syntax |
 |---------------------------------------|--------------------:|--------------------:|--------|
 | [Current](/src/current)               |                ~8ms |             ~1800ms | old    |
-| [PEG.js](/src/astrocite) (astrocite)¹ |                ~9ms |             ~1670ms | new²   |
+| [PEG.js](/src/astrocite) (astrocite)  |                ~9ms |             ~1670ms | new¹   |
 | [Idea](/src/idea)                     |                ~2ms |             ~1150ms | old    |
 | [Idea (reworked)](/src/idea-reworked) |                ~3ms |              ~750ms | new    |
-| [nearley](/src/nearley) (self-made)   |              ~20ms³ |              N/A³ ⁴ | new    |
+| [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | new    |
 | [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | new    |
-| [Zotero](/src/zotero)⁵                |              ~177ms |            ~31000ms | old    |
+| [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | old    |
 
-¹ Only creates an AST, not a JSON representation of the data itself  
-² Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
-³ I fully expect this to be my fault, not nearley's  
-⁴ Causes an `Allocation failed - JavaScript heap out of memory` error  
-⁵ Converts to Zotero API JSON format
+¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
+² I fully expect this to be my fault, not nearley's  
+³ Causes an `Allocation failed - JavaScript heap out of memory` error  
+⁴ Converts to Zotero API JSON format
 
 ### Current
 
