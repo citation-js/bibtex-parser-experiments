@@ -8,8 +8,7 @@ const parsers = [
   'idea-reworked',
   'astrocite',
   'fiduswriter',
-  // see https://github.com/zotero/zotero/pull/1737
-  // 'zotero'
+  'zotero'
 ]
 
 async function time (name, func, ...args) {
@@ -38,7 +37,12 @@ async function testParser (name, texts) {
 
   const row = { init }
   for (let [file, text] of texts) {
-    if (file === 'long.bib' && name === 'nearley') {
+    if (
+      // causes the process to run out of memory
+      (file === 'long.bib' && name === 'nearley') ||
+      // see https://github.com/zotero/zotero/pull/1737
+      (file === 'syntax.bib' && name === 'zotero')
+    ) {
       row[file] = 'N/A'
       continue
     }
