@@ -38,6 +38,10 @@ async function testParser (name, texts) {
 
   const row = { init }
   for (let [file, text] of texts) {
+    if (file === 'long.bib' && name === 'nearley') {
+      row[file] = 'N/A'
+      continue
+    }
     row[file] = await time(name, parser.parse, text)
   }
 
