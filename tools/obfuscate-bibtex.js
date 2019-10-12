@@ -4,7 +4,7 @@ const path = require('path')
 function transform (input) {
   return input
     .replace(
-      /(abstract = \{)([^]+?)(\},\n {4}author)/g,
+      /(abstract = \{)([^]+?)(\},\n {4}[a-z]+)/g,
       (_, g1, g2, g3) => g1 + g2
         .replace(/[a-z]/g, 'a')
         .replace(/[A-Z]/g, 'A')
