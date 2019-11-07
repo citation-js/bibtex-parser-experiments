@@ -29,7 +29,8 @@ tokenizes some rough commands.
 
 ### astrocite
 
-The `astrocite-bibtex` by @dsifford package uses `PEG.js`.
+The `astrocite-bibtex` package by @dsifford uses PEG.js. It is capable of returning
+an AST.
 
 ### Idea (& reworked idea)
 
@@ -65,5 +66,6 @@ recognise the BibLaTeX-only `@electronic` type.
 
 ### Better BibTeX for Zotero (BBT)
 
-Using `@retorquere/bibtex-parser`, this performs very well. I have not had a
-chance to test out all the parser features fopr literal/text/name values yet.
+Using `@retorquere/bibtex-parser`, this performs very well. It is capable of
+returning an AST. I have not had a chance to test out all the parser features
+for literal/text/name values yet.
