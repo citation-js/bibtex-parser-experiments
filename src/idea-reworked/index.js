@@ -288,5 +288,5 @@ export const bibtexGrammar = new Grammar({
 })
 
 export function parse (text) {
-  return bibtexGrammar.parse(lexer.reset(text))
+  return bibtexGrammar.parse(lexer.reset(text), true)
 }

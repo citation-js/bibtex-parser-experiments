@@ -26,10 +26,15 @@ export class Grammar {
    * @param iterator - lexer supporting formatError() and next()
    * @return result of the main rule
    */
-  parse (iterator) {
+  parse (iterator, returnAST) {
     this.lexer = iterator
     this.token = this.lexer.next()
-    return this.consumeRule(this.mainRule)
+
+    this.returnAST = returnAST
+    if (returnAST) { this.childrenCache = [[]] }
+
+    const result = this.consumeRule(this.mainRule)
+    return returnAST ? this.childrenCache[0][0] : result
   }
 
   /**
@@ -58,6 +63,20 @@ export class Grammar {
 
     if (!type || (token && token.type === type)) {
       this.token = this.lexer.next()
+      if (this.returnAST) {
+        this.childrenCache[0].push({
+          kind: token.type,
+          loc: {
+            start: { offset: token.offset, line: token.line, col: token.col },
+            end: {
+              offset: token.offset + token.text.length,
+              line: token.line + token.lineBreaks,
+              col: token.lineBreaks ? token.text.split('\n').pop().length : token.col + token.text.length
+            }
+          },
+          value: token.value
+        })
+      }
       return token
     } else if (optional) {
       return undefined
@@ -75,8 +94,27 @@ export class Grammar {
    */
   consumeRule (rule) {
     this.log.push(rule)
+    if (this.returnAST) {
+      this.childrenCache.unshift([])
+    }
     const result = this.rules[rule].call(this)
     this.log.pop()
+
+    const children = this.childrenCache.shift()
+    if (this.returnAST && children.length) {
+      const start = children[0]
+      const end = children[children.length - 1]
+      this.childrenCache[0].push({
+        kind: rule,
+        loc: {
+          start: start.loc.start,
+          end: end.loc.end
+        },
+        children,
+        value: result
+      })
+    }
+
     return result
   }
 }
