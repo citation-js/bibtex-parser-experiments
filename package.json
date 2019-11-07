@@ -21,7 +21,7 @@
   "author": "Lars Willighagen",
   "license": "MIT",
   "dependencies": {
-    "@retorquere/bibtex-parser": "^1.0.81",
+    "@retorquere/bibtex-parser": "^1.0.82",
     "biblatex-csl-converter": "^1.6.9",
     "moo": "^0.5.1",
     "nearley": "^2.19.0",
