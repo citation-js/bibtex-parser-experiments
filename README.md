@@ -14,13 +14,12 @@ to other formats as well in the future.
 | [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | basic     |
 | [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | complete  |
 | [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | basic     |
-| [Better BibTeX (BBT)](/src/bbt)       |               ~10ms |            ~12000ms | complete⁵ |
+| [Better BibTeX (BBT)](/src/bbt)       |               ~10ms |            ~12000ms | complete  |
 
 ¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ² I fully expect this to be my fault, not nearley's  
 ³ Causes an `Allocation failed - JavaScript heap out of memory` error  
 ⁴ Converts to Zotero API JSON format  
-⁵ Misses some forms of diacritics  
 
 ### Current
 
