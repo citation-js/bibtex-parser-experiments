@@ -20,16 +20,16 @@
   "author": "Lars Willighagen",
   "license": "MIT",
   "dependencies": {
-    "@retorquere/bibtex-parser": "^1.0.74",
+    "@retorquere/bibtex-parser": "^1.0.81",
     "biblatex-csl-converter": "^1.6.9",
     "moo": "^0.5.1",
     "nearley": "^2.19.0",
     "translation-server": "git+https://github.com/zotero/translation-server.git"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.2",
-    "@babel/core": "^7.6.2",
-    "@babel/preset-env": "^7.6.2",
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
     "@babel/register": "^7.6.2",
     "pegjs": "^0.10.0"
   }

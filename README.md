@@ -14,13 +14,13 @@ to other formats as well in the future.
 | [nearley](/src/nearley) (self-made)   |              ~20ms² |              N/A² ³ | basic     |
 | [fiduswriter](/src/fiduswriter)       |              ~160ms |           ~119000ms | complete  |
 | [Zotero](/src/zotero)⁴                |              ~177ms |            ~31000ms | basic     |
-| [Better BibTeX (BBT)](/src/bbt)       |               ~15ms |            ~14000ms | complete⁵ |
+| [Better BibTeX (BBT)](/src/bbt)       |               ~10ms |            ~12000ms | complete⁵ |
 
 ¹ Although it misses some nuances, like the fact that braced `@comment`s do not really exist  
 ² I fully expect this to be my fault, not nearley's  
 ³ Causes an `Allocation failed - JavaScript heap out of memory` error  
 ⁴ Converts to Zotero API JSON format  
-⁵ Misses some diacritics and chained concatenations  
+⁵ Misses some forms of diacritics  
 
 ### Current
 
@@ -58,11 +58,12 @@ file.
 
 ### Zotero
 
-Zotero Translators are notoriously hard to use stand-alone, as they depend on a
-Zotero framework in the global scope. Additionally, it converts to Zotero API JSON
-while parsing the syntax. This results in it only returning 3322 entries, as it
-does not recognise the BibLaTeX-only `@electronic` type.
+Zotero Translators are hard to use stand-alone, as they depend on a Zotero
+framework in the global scope. Additionally, because it converts to Zotero API
+JSON while parsing the syntax, it only returns 3322 entries, as it does not
+recognise the BibLaTeX-only `@electronic` type.
 
 ### Better BibTeX for Zotero (BBT)
 
-Using `@retorquere/bibtex-parser`, this performs pretty okay.
+Using `@retorquere/bibtex-parser`, this performs very well. I have not had a
+chance to test out all the parser features fopr literal/text/name values yet.
