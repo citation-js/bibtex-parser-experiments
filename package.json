@@ -8,6 +8,7 @@
     "babel": "babel src -d lib --copy-files",
     "astrocite": "pegjs src/astrocite/grammar.pegjs",
     "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne",
+    "pretest": "npm run babel",
     "test": "node ./test/"
   },
   "keywords": [
