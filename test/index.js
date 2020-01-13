@@ -54,7 +54,7 @@ async function testParser (name, texts) {
 }
 
 async function main () {
-  const dirPath = path.join(__dirname, 'files')
+  const dirPath = path.join(__dirname, 'fixtures', 'syntax')
   const files = await fs.readdir(dirPath)
   const texts = []
   for (let file of files) {

@@ -21,7 +21,7 @@ parsers = parsers.map(function(name) {
   return { name, parser }
 })
 
-const dirPath = path.join(__dirname, 'files')
+const dirPath = path.join(__dirname, 'fixtures', 'benchmark')
 
 function run(method, filename) {
   return new Promise(function(resolve, reject) {
