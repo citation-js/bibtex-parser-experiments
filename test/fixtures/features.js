@@ -1,4 +1,4 @@
-const FOO = [{ type: 'book', label: 'a', keys: { title: 'foo' } }]
+const FOO = [{ type: 'book', id: 'a', properties: { title: 'foo' } }]
 
 export default {
   // ENTRY
@@ -22,9 +22,9 @@ export default {
     input: `@
       book
     {
-      d
+      a
     ,
-      title = "mixed-case, spaced"
+      title = "foo"
     }`,
     output: FOO
   },
@@ -70,7 +70,7 @@ export default {
     input: `@string{ foo = "foo" }
 @book{a, title = foo}
 @book{b, title = FOO}`,
-    output: [FOO[0], { label: 'b', ...FOO[0] }]
+    output: [FOO[0], { ...FOO[0], id: 'b' }]
   },
   'string value with concatenated string': {
     input: `@string{ f = "f" }
@@ -82,30 +82,28 @@ export default {
 
   // KEYS
   'string key with colon': {
-    input: `@string{ a:a = "foo" }
-            @string{ b:b = a:a }`,
-    output: [
-      { type: 'string', keys: { 'a:a': 'foo' } },
-      { type: 'string', keys: { 'b:b': 'foo' } }
-    ]
+    input: `@string{ a:a = "o" }
+            @string{ b:b = a:a }
+            @book{a, title = "f" # a:a # b:b}`,
+    output: FOO
   },
   'entry key with colon': {
     input: `@book{a, a:a = "foo" }`,
-    output: [{ type: 'book', label: 'a', keys: { 'a:a': 'foo' } }]
+    output: [{ type: 'book', id: 'a', properties: { 'a:a': 'foo' } }]
   },
 
   // LABELS
   'entry label with number': {
     input: `@book{a1, title = "foo"}`,
-    output: [{ type: 'book', label: 'a1', keys: { title: 'foo' } }]
+    output: [{ type: 'book', id: 'a1', properties: { title: 'foo' } }]
   },
   'entry label with colon': {
     input: `@book{b:b, title = "foo"}`,
-    output: [{ type: 'book', label: 'b:b', keys: { title: 'foo' } }]
+    output: [{ type: 'book', id: 'b:b', properties: { title: 'foo' } }]
   },
   'entry label with double quotes': {
     input: `@book{"a", title = "foo"}`,
-    output: [{ type: 'book', label: '"a"', keys: { title: 'foo' } }]
+    output: [{ type: 'book', id: '"a"', properties: { title: 'foo' } }]
   },
 
   // VALUES
@@ -119,17 +117,18 @@ export default {
   },
   'entry value of number': {
     input: `@book{a, title = 2020}`,
-    output: [{ type: 'book', label: 'a', keys: { title: 2020 } }]
+    output: [{ type: 'book', id: 'a', properties: { title: 2020 } }],
+    gimmick: true // not a gimmick per se but `title: "2020"` is acceptable too
   },
   'entry value with mid-and concatenation': {
     input: `@book{a, author = "foo an" # "d bar"}`,
-    output: [{ type: 'book', label: 'a', keys: { author: ['a', 'b'] } }],
-    gimmic: true
+    output: [{ type: 'book', id: 'a', properties: { author: ['foo', 'bar'] } }],
+    gimmick: true
   },
   'entry value with mid-command concatenation': {
-    input: `@book{a, title = "foo \\copy" # "right bar"}`,
-    output: [{ type: 'book', label: 'a', keys: { title: 'foo © bar' } }],
-    gimmic: true
+    input: `@book{a, title = "foo \\copy" # "right{} bar"}`,
+    output: [{ type: 'book', id: 'a', properties: { title: 'foo © bar' } }],
+    gimmick: true
   },
   // TODO
 

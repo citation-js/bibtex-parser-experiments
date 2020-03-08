@@ -1,8 +1,9 @@
 require('@babel/register')
 
+const assert = require('assert').strict
 const util = require('util')
 
-const fixtures = Object.entries(require('./fixtures/syntax').default)
+const fixtures = Object.entries(require('./fixtures/features').default)
 const parsers = {
   'current': null,
   'idea-reworked': null,
@@ -16,12 +17,16 @@ const parsers = {
 }
 const FIXTURE = {
   PASS: '✓',
-  NO_SUPPORT: '?',
+  NO_SUPPORT: '✘*',
+  OTHER_CHOICE: ' ',
   FAIL: '✘'
 }
 
 const console = global.console
 global.console = global.logger = {
+  log (message) {
+    console.log(message)
+  },
   error (message) {
     throw new SyntaxError(message)
   }
@@ -29,7 +34,7 @@ global.console = global.logger = {
 
 async function getParsers () {
   for (const name in parsers) {
-    const parser = parsers[name] = require(`../lib/${name}`)
+    const parser = parsers[name] = require(`../src/${name}`)
     if (parser.init) {
       await parser.init()
     }
@@ -38,11 +43,15 @@ async function getParsers () {
 
 async function parseFixture (parser, fixture) {
   try {
-    await parser.parse(fixture.input)
+    let result = await parser.parse(fixture.input)
+    assert.deepEqual(parser._intoFixtureOutput(result), fixture.output)
+
     return [FIXTURE.PASS, null]
   } catch (e) {
-    if (fixture.gimmick || fixture.only) {
+    if (fixture.gimmick) {
       return [FIXTURE.NO_SUPPORT, e]
+    } else if (fixture.only) {
+      return [FIXTURE.OTHER_CHOICE, null]
     } else {
       return [FIXTURE.FAIL, e]
     }
@@ -59,15 +68,21 @@ async function testParser (parserName, filterPrefix) {
   console.log(`== ${parserName} ==`)
 
   for (let [fixtureName, fixture] of fixtures) {
-    if (filterPrefix && !fixture.startsWith(filterPrefix)) {
+    if (filterPrefix && !fixtureName.startsWith(filterPrefix)) {
       continue
     }
 
     let [code, error] = await parseFixture(parser, fixture)
-    console.log(`\x1B[32m${code}\x1B[39m`, fixtureName)
-    if (code !== FIXTURE.PASS) {
-      console.log(prefixLines(error.toString(), '    '))
-      // console.log(prefixLines(util.formatWithOptions({ colors: true }, error), '    '))
+    switch (code) {
+      case FIXTURE.PASS:
+        console.log(`\x1B[32m${code}\x1B[39m`, fixtureName)
+        break
+      case FIXTURE.NO_SUPPORT:
+      case FIXTURE.FAIL:
+        console.log(`\x1B[31m${code}\x1B[39m`, fixtureName)
+        console.log(prefixLines(error.toString(), '    '))
+        // console.log(prefixLines(util.formatWithOptions({ colors: true }, error), '    '))
+        break
     }
   }
 }
@@ -77,16 +92,18 @@ async function testFixtures (filterPrefix) {
   console.log(header)
   console.log(header.replace(/[^|]/g, '-'))
 
-  for (const [name, fixture] of fixtures) {
-    if (filterPrefix && !fixture.startsWith(filterPrefix)) {
+  for (const [fixtureName, fixture] of fixtures) {
+    if (filterPrefix && !fixtureName.startsWith(filterPrefix)) {
       continue
     }
 
     const codes = await Promise.all(Object.values(parsers).map(
       async parser => (await parseFixture(parser, fixture))[0]
     ))
-    console.log(`| ${name} | ${codes.join(' | ')} |`)
+    console.log(`| ${fixtureName} | ${codes.join(' | ')} |`)
   }
+
+  console.log('> * gimmicks, either trivial or not relevant')
 }
 
 async function main () {

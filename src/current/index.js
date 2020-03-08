@@ -185,3 +185,11 @@ export {
   parseBibTeX as parse,
   parseBibTeX as default
 }
+
+export function _intoFixtureOutput (result) {
+  return result.map(({ type, label, properties }) => ({
+    type,
+    id: label,
+    properties
+  }))
+}

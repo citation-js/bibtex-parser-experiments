@@ -1,6 +1,7 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
 import { defaultStrings } from './constants'
+import { parse as parseValue } from './value'
 
 const identifier = /[a-zA-Z][a-zA-Z0-9_:-]*/
 const whitespace = {
@@ -163,17 +164,19 @@ export const bibtexGrammar = new Grammar({
   },
 
   Expression () {
-    let output = this.consumeRule('ExpressionPart')
+    let output = this.consumeRule('ExpressionPart').toString()
     this.consumeRule('_')
 
     while (this.matchToken('hash')) {
       this.consumeToken('hash')
       this.consumeRule('_')
-      output += this.consumeRule('ExpressionPart').toString()
+      output += this.consumeRule('ExpressionPart')
       this.consumeRule('_')
     }
 
-    return output
+    // TODO: Expression in @string entries should never split
+    // TODO: keep numeric values
+    return parseValue(output)
   },
 
   ExpressionPart () {
@@ -181,7 +184,7 @@ export const bibtexGrammar = new Grammar({
       return this.state.strings[this.consumeToken('identifier').value.toLowerCase()] || ''
     } else if (this.matchToken('number')) {
       return parseInt(this.consumeToken('number'))
-    } else if (this.matchToken('quote')){
+    } else if (this.matchToken('quote')) {
       return this.consumeRule('QuoteString')
     } else if (this.matchToken('lbrace')) {
       return this.consumeRule('BracketString')
@@ -221,4 +224,20 @@ export const bibtexGrammar = new Grammar({
 
 export function parse (text) {
   return bibtexGrammar.parse(lexer.reset(text))
+}
+
+function _astToText (value) {
+  if (value.length === 1) {
+    return value[0]
+  } else {
+    return value
+  }
+}
+
+export function _intoFixtureOutput (result) {
+  return result.map(({ type, label, properties }) => ({
+    type,
+    id: label,
+    properties: Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, _astToText(value)]))
+  }))
 }

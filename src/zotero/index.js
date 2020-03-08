@@ -17,3 +17,14 @@ export async function parse (text) {
   translate.setTranslator(translators[0])
   return translate.translate({ libraryID: 1 })
 }
+
+export function _intoFixtureOutput (result) {
+  return result.map(({ itemID, itemType, ...entry }) => ({
+    type: itemType,
+    id: itemID,
+    properties: {
+      ...(entry.title && { title: entry.title }),
+      ...(entry.creators.length && { author: entry.creators.map(a => a.firstName + ' ' + a.lastName) }),
+    }
+  }))
+}

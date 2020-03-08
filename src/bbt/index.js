@@ -8,3 +8,20 @@ export function parse (text) {
     }
   })
 }
+
+function _astToText (value) {
+  if (value.length === 1) {
+    return value[0]
+  } else {
+    return value
+  }
+}
+
+export function _intoFixtureOutput (result) {
+  // console.log(result)
+  return result.entries.map(({ key, type, fields }) => ({
+    type,
+    id: key,
+    properties: Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
+  }))
+}
