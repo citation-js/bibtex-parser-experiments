@@ -199,4 +199,16 @@ export default {
       type: "article"
     } ],
   },
+  'verbatim fields': {
+    input: `@article{test,
+      file = {files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        file: "files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf"
+      },
+      type: "article"
+    } ]
+  },
 }

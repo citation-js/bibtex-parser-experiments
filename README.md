@@ -155,6 +155,7 @@ see also [the fixture file](test/fixtures/features.js).
 | sentence-casing | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | markup | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | literal names and biblatex extended names | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
 > * gimmicks, either trivial or not relevant
 
 ## Performance
