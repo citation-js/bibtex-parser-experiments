@@ -9,7 +9,9 @@
     "astrocite": "pegjs src/astrocite/grammar.pegjs",
     "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne",
     "pretest": "npm run babel",
-    "test": "node ./test/"
+    "test": "node ./test/",
+    "benchmark": "node ./test/benchmark",
+    "feature": "node ./test/feature"
   },
   "keywords": [
     "bibtex",

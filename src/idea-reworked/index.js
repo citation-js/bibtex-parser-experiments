@@ -1,16 +1,11 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
-import * as constants from './constants'
+import { defaultStrings } from './constants'
+import { parse as parseValue } from './value'
 
 const identifier = /[a-zA-Z][a-zA-Z0-9_:-]*/
 const whitespace = {
   comment: /%.*/,
-  whitespace: { match: /\s+/, lineBreaks: true }
-}
-const text = {
-  command: /\\(?:[a-z]+|.) */,
-  lbrace: { match: '{', push: 'bracedLiteral' },
-  mathShift: { match: '$', push: 'mathLiteral' },
   whitespace: { match: /\s+/, lineBreaks: true }
 }
 
@@ -52,20 +47,14 @@ const lexer = moo.states({
     rbrace: { match: /[})]/, pop: true }
   },
   quotedLiteral: {
-    ...text,
+    lbrace: { match: '{', push: 'bracedLiteral' },
     quote: { match: '"', pop: true },
-    text: /[^{$"\s\\]+/
+    text: { match: /[^{"]+/, lineBreaks: true }
   },
   bracedLiteral: {
-    ...text,
+    lbrace: { match: '{', push: 'bracedLiteral' },
     rbrace: { match: '}', pop: true },
-    text: /[^{$}\s\\]+/
-  },
-  mathLiteral: {
-    ...text,
-    mathShift: { match: '$', pop: true },
-    script: /[\^_]/,
-    text: /[^{$}\s\\\^_]+/
+    text: { match: /[^{}]+/, lineBreaks: true }
   }
 })
 
@@ -175,17 +164,19 @@ export const bibtexGrammar = new Grammar({
   },
 
   Expression () {
-    let output = this.consumeRule('ExpressionPart')
+    let output = this.consumeRule('ExpressionPart').toString()
     this.consumeRule('_')
 
     while (this.matchToken('hash')) {
       this.consumeToken('hash')
       this.consumeRule('_')
-      output += this.consumeRule('ExpressionPart').toString()
+      output += this.consumeRule('ExpressionPart')
       this.consumeRule('_')
     }
 
-    return output
+    // TODO: Expression in @string entries should never split
+    // TODO: keep numeric values
+    return parseValue(output)
   },
 
   ExpressionPart () {
@@ -193,7 +184,7 @@ export const bibtexGrammar = new Grammar({
       return this.state.strings[this.consumeToken('identifier').value.toLowerCase()] || ''
     } else if (this.matchToken('number')) {
       return parseInt(this.consumeToken('number'))
-    } else if (this.matchToken('quote')){
+    } else if (this.matchToken('quote')) {
       return this.consumeRule('QuoteString')
     } else if (this.matchToken('lbrace')) {
       return this.consumeRule('BracketString')
@@ -220,73 +211,33 @@ export const bibtexGrammar = new Grammar({
     return output
   },
 
-  MathString () {
-    let output = ''
-    this.consumeToken('mathShift')
-    while (!this.matchToken('mathShift')) {
-      if (this.matchToken('script')) {
-        const script = this.consumeToken('script').value
-        const text = this.consumeRule('Text').replace(/^{|}$/g, '')
-        output += constants.mathScripts[script][text[0]] + text.slice(1)
-      } else {
-        output += this.consumeRule('Text')
-      }
-    }
-    this.consumeToken('mathShift')
-    return output
-  },
-
   Text () {
     if (this.matchToken('lbrace')) {
       return `{${this.consumeRule('BracketString')}}`
-
-    } else if (this.matchToken('mathShift')) {
-      return this.consumeRule('MathString')
-
-    } else if (this.matchToken('whitespace')) {
-      this.consumeToken('whitespace')
-      return ' '
-
-    } else if (this.matchToken('command')) {
-      return this.consumeRule('Command')
-
     } else {
-      return this.consumeToken('text').value.replace(
-        constants.ligaturePattern,
-        ligature => constants.ligatures[ligature]
-      )
-    }
-  },
-
-  Command () {
-    const command = this.consumeToken('command').value.slice(1).trimEnd()
-
-    // command
-    if (command in constants.commands) {
-      return constants.commands[command]
-
-    // diacritics
-    } else if (command in constants.diacritics && !this.matchEndOfFile()) {
-      if (this.matchToken('text')) {
-        const text = this.consumeToken('text').value
-        return text[0] + constants.diacritics[command] + text.slice(1)
-      } else {
-        return this.consumeRule('Text') + constants.diacritics[command]
-      }
-
-    // escapes
-    } else if (/^\W$/.test(command)) {
-      return command
-
-    // unknown commands
-    } else {
-      return '\\' + command
+      return this.consumeToken('text').value
     }
   }
 }, {
-  strings: Object.assign({}, constants.defaultStrings)
+  strings: { ...defaultStrings }
 })
 
 export function parse (text) {
   return bibtexGrammar.parse(lexer.reset(text))
+}
+
+function _astToText (value) {
+  if (value.length === 1) {
+    return value[0]
+  } else {
+    return value
+  }
+}
+
+export function _intoFixtureOutput (result) {
+  return result.map(({ type, label, properties }) => ({
+    type,
+    id: label,
+    properties: Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, _astToText(value)]))
+  }))
 }
