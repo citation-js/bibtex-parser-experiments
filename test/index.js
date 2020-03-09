@@ -1,77 +1,94 @@
-const fs = require('fs').promises
+const Benchmark = require('benchmark')
+const fs = require('fs')
 const path = require('path')
+
+const console = global.console
+global.console = global.logger = {
+  error (message) {
+    throw new SyntaxError(message)
+  }
+}
+const cacheBase = Object.keys(require.cache)
 
 const parsers = [
   'current',
-  'nearley',
-  'idea',
+  // 'nearley',
+  // 'idea',
   'idea-reworked',
   'astrocite',
   'fiduswriter',
   'zotero',
   'bbt'
 ]
+const dirPath = path.join(__dirname, 'fixtures', 'benchmark')
+const files = ['single.bib', 'long.bib'].reduce((files, name) => {
+  const file = fs.readFileSync(path.join(dirPath, name), 'utf8')
+  files[name] = file
+  return files
+}, {})
 
-async function time (name, func, ...args) {
-  const start = Date.now()
-  try {
-    global.console.error = message => { throw new SyntaxError(message) }
-    await func(...args)
-    return `${Date.now() - start}ms`
-  } catch (e) {
-    return 'N/A'
-  }
-}
+function run (parserName) {
+  return new Promise(function (resolve, reject) {
+    const suite = new Benchmark.Suite()
+    let parser = null
+    process.stdout.write(`| ${parserName} |`)
 
-async function runInit (package) {
-  const parser = require(package)
-  if (parser.init) {
-    await parser.init()
-  }
-  return parser
-}
+    suite.on('cycle', function (event) {
+      const bench = event.target
 
-async function testParser (name, texts) {
-  const package = `../lib/${name}`
-  const init = await time(name, runInit, package)
-  const parser = require(package)
+      if (bench.error) {
+        console.log(bench.error)
+      } else {
+        process.stdout.write(` ${(1000 / bench.hz).toPrecision(3)}ms ± ${bench.stats.rme.toFixed(1)}% |`)
+      }
+    })
 
-  const row = { init }
-  for (let [file, text] of texts) {
-    if (
-      // causes the process to run out of memory
-      (file === 'long.bib' && name === 'nearley') ||
-      // see https://github.com/zotero/zotero/pull/1737
-      (file === 'syntax.bib' && name === 'zotero')
-    ) {
-      row[file] = 'N/A'
-      continue
+    suite.on('complete', function () {
+      process.stdout.write('\n')
+      resolve()
+    })
+
+    suite.add('init', {
+      defer: true,
+      fn (defer) {
+        // clear cache
+        for (const entry in require.cache) {
+          if (cacheBase.includes(entry)) { continue }
+          delete require.cache[entry]
+        }
+
+        parser = require(`../lib/${parserName}`)
+        if (parser.init) {
+          Promise.resolve(parser.init()).then(() => defer.resolve())
+        } else {
+          defer.resolve()
+        }
+      }
+    })
+
+    for (const filename in files) {
+      (function(filename) {
+        suite.add(`parse.${filename}`, {
+          defer: true,
+          fn (defer) {
+            Promise.resolve(parser.parse(files[filename])).then(() => defer.resolve())
+          }
+        })
+      })(filename)
     }
-    row[file] = await time(name, parser.parse, text)
-  }
 
-  return row
+    suite.run({ async: true })
+  })
 }
 
-async function main () {
-  const dirPath = path.join(__dirname, 'fixtures', 'syntax')
-  const files = await fs.readdir(dirPath)
-  const texts = []
-  for (let file of files) {
-    texts.push([file, await fs.readFile(path.join(dirPath, file), 'utf8')])
-  }
+async function main() {
+  console.log('|              | Init             | Time (single entry) | Time (3345 entries) |')
+  console.log('|--------------|-----------------:|--------------------:|--------------------:|')
 
-  const results = []
-  for (let name of parsers) {
-    results.push([name, await testParser(name, texts)])
+  for (const parser of parsers) {
+    await run(parser)
   }
-
-  return Object.fromEntries(results)
 }
-
-const console = global.console
-global.console = {}
 
 main()
-  .then(console.table)
   .catch(console.error)

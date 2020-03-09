@@ -103,13 +103,13 @@ for literal/text/name values yet.
 
 ## API Features
 
-| | current | idea-reworked | astrocite | fiduswriter | zotero | bbt |
-|-|---------|---------------|-----------|-------------|--------|-----|
-| Sync/Async | sync | sync | sync | both | async | both |
-| AST output | ✘    | ✘    | ✓    | ✘    | ✘     | ✓    |
-| Lossless schema¹ | ✓ | ✘ | ✓    | ✓    | ✘     | ✓    |
-| Lossless values  | ✘ | ✘ | ✘    | ✓    | ✘     | ✓    |
-| Error recovery | ✓ | ✘   | ✘    | ✓    | ✘     | ✓    |
+|                  | current | idea-reworked | astrocite | fiduswriter | zotero | bbt  |
+|------------------|---------|---------------|-----------|-------------|--------|------|
+| Sync/Async       | sync    | sync          | sync      | both        | async  | both |
+| AST output       | ✘       | ✘             | ✓         | ✘           | ✘      | ✓    |
+| Lossless schema¹ | ✓       | ✘             | ✓         | ✓           | ✘      | ✓    |
+| Lossless values  | ✘       | ✘             | ✘         | ✓           | ✘      | ✓    |
+| Error recovery   | ✓       | ✘             | ✘         | ✓           | ✘      | ✓    |
 
 ¹ specifically the schema used to represent data entries and not value
   syntax (commands, formatting), and disregarding AST
@@ -156,14 +156,13 @@ see also [the fixture file](test/fixtures/features.js).
 
 ## Performance
 
-Data from `npm run benchmark`.
+Data from `npm test`.
 
-|                       | Time (single entry) | Time (3345 entries) |
-|-----------------------|--------------------:|--------------------:|
-| Citation.js (old)     |             1.495ms |              2795ms |
-| Citation.js (idea #1) |             0.521ms |              1700ms |
-| Citation.js (idea #2) |             0.736ms |              1471ms |
-| astrocite (PEG.js)    |             1.018ms |              2784ms |
-| fiduswriter           |            14.912ms |            146766ms |
-| Zotero                |            25.797ms |             35427ms |
-| Better BibTeX (BBT)   |             1.692ms |             21072ms |
+|              | Init             | Time (single entry) | Time (3345 entries) |
+|--------------|-----------------:|--------------------:|--------------------:|
+| current | 0.962ms ± 2.8% | 1.15ms ± 5.3% | 3.28e+3ms ± 5.5% |
+| idea-reworked | 4.81ms ± 6.4% | 0.418ms ± 2.2% | 1.22e+3ms ± 17.1% |
+| astrocite | 2.83ms ± 4.3% | 1.03ms ± 4.2% | 2.43e+3ms ± 10.2% |
+| fiduswriter | 29.6ms ± 3.0% | 11.7ms ± 31.4% | 1.45e+5ms ± 13.6% |
+| zotero | 536ms ± 11.7% | 20.2ms ± 16.0% | 3.12e+4ms ± 10.3% |
+| bbt | 8.00ms ± 5.5% | 2.12ms ± 5.1% | 2.10e+4ms ± 9.9% |

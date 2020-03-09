@@ -24,9 +24,6 @@ const FIXTURE = {
 
 const console = global.console
 global.console = global.logger = {
-  log (message) {
-    console.log(message)
-  },
   error (message) {
     throw new SyntaxError(message)
   }
