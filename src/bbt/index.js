@@ -17,11 +17,19 @@ function _astToText (value) {
   }
 }
 
+function fieldsObject(fields) {
+  return Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
+}
+
+function creatorsObject(creators) {
+  return Object.fromEntries(Object.entries(creators).map(([type, names]) => [type, names.map(name => name.lastName || name.literal)]))
+}
+
 export function _intoFixtureOutput (result) {
   // console.log(result)
-  return result.entries.map(({ key, type, fields }) => ({
+  return result.entries.map(({ key, type, fields, creators}) => ({
     type,
     id: key,
-    properties: Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
+    properties: Object.assign(fieldsObject(fields), creatorsObject(creators)),
   }))
 }

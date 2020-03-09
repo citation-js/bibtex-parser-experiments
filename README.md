@@ -128,15 +128,15 @@ see also [the fixture file](test/fixtures/features.js).
 | entry with mixed-case type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with uppercase type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✘ | ✘ |
-| string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✘ |
+| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✘ | ✓ |
+| string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✓ |
 | entry key with colon | ✓ | ✓ | ✓ | ✘ | ✘ | ✓ |
 | entry label with number | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with colon | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with double quotes | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of quoted string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of braced string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry value of number | ✘* | ✘* | ✓ | ✘* | ✘* | ✘* |
+| entry value of number | ✘* | ✘* | ✓ | ✘* | ✘* | ✓ |
 | entry value with mid-and concatenation | ✘* | ✓ | ✘* | ✓ | ✘* | ✓ |
 | entry value with mid-command concatenation | ✘* | ✓ | ✘* | ✘* | ✘* | ✘* |
 | TODO |   |   |   |   |   |   |
@@ -145,13 +145,16 @@ see also [the fixture file](test/fixtures/features.js).
 | string with uppercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string value with string | ✘ | ✓ | ✓ | ✓ | ✘ | ✓ |
-| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✘ | ✘ |
+| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✘ | ✓ |
 | preamble with quoted string | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | preamble with string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | preamble with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | comment before entry | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | comment around entry (natbib) |   | ✓ |   |   |   |   |
 | comment around entry (biblatex) |   |   | ✓ | ✓ | ✓ | ✓ |
+| sentence-casing | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| markup | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| literal names and biblatex extended names | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 > * gimmicks, either trivial or not relevant
 
 ## Performance
