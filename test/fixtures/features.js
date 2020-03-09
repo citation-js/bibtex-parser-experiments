@@ -29,57 +29,6 @@ export default {
     output: FOO
   },
 
-  // PREAMBLE
-  'preamble with quoted string': {
-    input: `@preamble { "test" }`,
-    output: []
-  },
-  'preamble with string': {
-    input: `@string{ include = "a" }
-@preamble { include }`,
-    output: []
-  },
-  'preamble with concatenated string': {
-    input: `@string{ include = "a" }
-@preamble { include # include }`,
-    output: []
-  },
-
-  // STRING
-  'string with lowercase type': {
-    input: `@string{ foo = "foo" }
-@book{a, title = foo}`,
-    output: FOO
-  },
-  'string with mixed-case type': {
-    input: `@StRiNg{ foo = "foo" }
-@book{a, title = foo}`,
-    output: FOO
-  },
-  'string with uppercase type': {
-    input: `@STRING{ foo = "foo" }
-@book{a, title = foo}`,
-    output: FOO
-  },
-  'string with parentheses': {
-    input: `@string( foo = "foo" )
-@book{a, title = foo}`,
-    output: FOO
-  },
-  'string value with string': {
-    input: `@string{ foo = "foo" }
-@book{a, title = foo}
-@book{b, title = FOO}`,
-    output: [FOO[0], { ...FOO[0], id: 'b' }]
-  },
-  'string value with concatenated string': {
-    input: `@string{ f = "f" }
-@string{ o = "o" }
-@string{ fo = f # o }
-@book{a, title = fo # o}`,
-    output: FOO
-  },
-
   // KEYS
   'string key with colon': {
     input: `@string{ a:a = "o" }
@@ -131,6 +80,60 @@ export default {
     gimmick: true
   },
   // TODO
+  'TODO': {
+    only: 'display'
+  },
+
+  // STRING
+  'string with lowercase type': {
+    input: `@string{ foo = "foo" }
+@book{a, title = foo}`,
+    output: FOO
+  },
+  'string with mixed-case type': {
+    input: `@StRiNg{ foo = "foo" }
+@book{a, title = foo}`,
+    output: FOO
+  },
+  'string with uppercase type': {
+    input: `@STRING{ foo = "foo" }
+@book{a, title = foo}`,
+    output: FOO
+  },
+  'string with parentheses': {
+    input: `@string( foo = "foo" )
+@book{a, title = foo}`,
+    output: FOO
+  },
+  'string value with string': {
+    input: `@string{ foo = "foo" }
+@book{a, title = foo}
+@book{b, title = FOO}`,
+    output: [FOO[0], { ...FOO[0], id: 'b' }]
+  },
+  'string value with concatenated string': {
+    input: `@string{ f = "f" }
+@string{ o = "o" }
+@string{ fo = f # o }
+@book{a, title = fo # o}`,
+    output: FOO
+  },
+
+  // PREAMBLE
+  'preamble with quoted string': {
+    input: `@preamble { "test" }`,
+    output: []
+  },
+  'preamble with string': {
+    input: `@string{ include = "a" }
+@preamble { include }`,
+    output: []
+  },
+  'preamble with concatenated string': {
+    input: `@string{ include = "a" }
+@preamble { include # include }`,
+    output: []
+  },
 
   // COMMENT
   'comment before entry': {
