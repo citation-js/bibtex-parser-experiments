@@ -9,11 +9,15 @@ export function parse (text) {
   })
 }
 
+function normalize(value) {
+  return (typeof value === 'string') ? value.normalize('NFC') : value
+}
+
 function _astToText (value) {
   if (value.length === 1) {
-    return value[0]
+    return normalize(value[0])
   } else {
-    return value
+    return value.map(normalize)
   }
 }
 
