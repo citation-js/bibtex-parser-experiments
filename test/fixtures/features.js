@@ -211,4 +211,16 @@ export default {
       type: "article"
     } ]
   },
+  'diacritics and subscript': {
+    input: `@article{test,
+      publisher =  { D{\\u{o}}\\}\\"ead Po$_{eee}$t Society},
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        publisher: "Dŏ}ëad Poₑₑₑt Society"
+      },
+      type: "article"
+    } ]
+  },
 }
