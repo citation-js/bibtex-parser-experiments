@@ -4,7 +4,7 @@ sudo: false
 install:
   - npm install
   - npm run astrocite
-  - npm run nearley
+  - npm run zotero
   - npm run babel
 script:
   - npm test
