@@ -12,7 +12,7 @@
     "pretest": "npm run babel",
     "test": "node ./test/",
     "benchmark": "node ./test/benchmark",
-    "feature": "node ./test/feature"
+    "features": "node ./test/feature"
   },
   "keywords": [
     "bibtex",
@@ -24,7 +24,7 @@
   "author": "Lars Willighagen",
   "license": "MIT",
   "dependencies": {
-    "@retorquere/bibtex-parser": "^2.0.0",
+    "@retorquere/bibtex-parser": "^3.1.22",
     "benchmark": "^2.1.4",
     "biblatex-csl-converter": "^1.7.3",
     "moo": "^0.5.1",

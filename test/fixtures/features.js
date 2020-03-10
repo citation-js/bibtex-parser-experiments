@@ -157,5 +157,82 @@ export default {
     }`,
     output: [],
     only: 'natbib'
-  }
+  },
+  'sentence-casing': {
+    input: `@article{test,
+      title = {Stability {Analysis} and Optimization}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        title: "Stability Analysis and optimization"
+      },
+      type: "article"
+    } ],
+  },
+  'markup': {
+    input: `@article{test,
+      title = {Stability Analysis and {\\emph{Optimization}}}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        title: "Stability analysis and <i>optimization</i>"
+      },
+      type: "article"
+    } ],
+  },
+  'literal names and biblatex extended names': {
+    input: `@article{test,
+      author = {Bausch and Lomb and {Bausch and Lomb} and family=Duchamp, given=Philippe, given-i={Ph}}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        author: [
+          "Bausch",
+          "Lomb",
+          "Bausch and Lomb",
+          "Duchamp"
+        ]
+      },
+      type: "article"
+    } ],
+  },
+  'verbatim fields': {
+    input: `@article{test,
+      file = {files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        file: "files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf"
+      },
+      type: "article"
+    } ]
+  },
+  'diacritics and subscript': {
+    input: `@article{test,
+      publisher =  { D{\\u{o}}\\}\\"ead Po$_{eee}$t Society},
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        publisher: "Dŏ}ëad Poₑₑₑt Society"
+      },
+      type: "article"
+    } ]
+  },
+  'multi-argument commands': {
+    input: `@article{test,
+      title = {$\\frac 1 2$ and $\\frac{n}{2}$}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        title: "½ and ⁿ⁄₂"
+      },
+      type: "article"
+    } ]
+  },
 }

@@ -9,19 +9,31 @@ export function parse (text) {
   })
 }
 
+function normalize(value) {
+  return (typeof value === 'string') ? value.normalize('NFC') : value
+}
+
 function _astToText (value) {
   if (value.length === 1) {
-    return value[0]
+    return normalize(value[0])
   } else {
-    return value
+    return value.map(normalize)
   }
+}
+
+function fieldsObject(fields) {
+  return Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
+}
+
+function creatorsObject(creators) {
+  return Object.fromEntries(Object.entries(creators).map(([type, names]) => [type, names.map(name => name.lastName || name.literal)]))
 }
 
 export function _intoFixtureOutput (result) {
   // console.log(result)
-  return result.entries.map(({ key, type, fields }) => ({
+  return result.entries.map(({ key, type, fields, creators}) => ({
     type,
     id: key,
-    properties: Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
+    properties: Object.assign(fieldsObject(fields), creatorsObject(creators)),
   }))
 }

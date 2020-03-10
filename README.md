@@ -136,7 +136,7 @@ see also [the fixture file](test/fixtures/features.js).
 | entry label with double quotes | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of quoted string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of braced string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry value of number | ✘* | ✘* | ✓ | ✘* | ✘* | ✘* |
+| entry value of number | ✘* | ✘* | ✓ | ✘* | ✘* | ✓ |
 | entry value with mid-and concatenation | ✘* | ✓ | ✘* | ✓ | ✘* | ✓ |
 | entry value with mid-command concatenation | ✘* | ✓ | ✘* | ✘* | ✘* | ✘* |
 | TODO |   |   |   |   |   |   |
@@ -152,6 +152,12 @@ see also [the fixture file](test/fixtures/features.js).
 | comment before entry | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | comment around entry (natbib) |   | ✓ |   |   |   |   |
 | comment around entry (biblatex) |   |   | ✓ | ✓ | ✓ | ✓ |
+| sentence-casing | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| markup | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| literal names and biblatex extended names | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| diacritics and subscript | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 > * gimmicks, either trivial or not relevant
 
 ## Performance
