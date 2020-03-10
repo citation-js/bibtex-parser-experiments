@@ -8,6 +8,7 @@
     "babel": "babel src -d lib --copy-files",
     "astrocite": "pegjs src/astrocite/grammar.pegjs",
     "nearley": "nearleyc -o src/nearley/grammar.js src/nearley/grammar.ne",
+    "zotero": "node ./tools/make-zotero.js",
     "pretest": "npm run babel",
     "test": "node ./test/",
     "benchmark": "node ./test/benchmark",
@@ -28,7 +29,7 @@
     "biblatex-csl-converter": "^1.7.3",
     "moo": "^0.5.1",
     "nearley": "^2.19.0",
-    "translation-server": "git+https://github.com/zotero/translation-server.git"
+    "translators-check": "git+https://github.com/zotero/translators.git"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",

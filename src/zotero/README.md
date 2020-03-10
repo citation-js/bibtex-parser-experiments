@@ -1,5 +1,4 @@
   - requires async `init()`
   - requires some hacks to load translators
-  - converts to Zotero API JSON immediately
-  - only outputs 3322 entries (misses 23 BibLaTeX-only `@electronic` entries)
-  - takes 31000 ms
+  - ~~only outputs 3322 entries (misses 23 BibLaTeX-only `@electronic` entries)~~
+    - fixed in [PR#2020](https://github.com/zotero/translators/pull/2020)

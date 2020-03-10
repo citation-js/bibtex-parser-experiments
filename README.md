@@ -128,7 +128,7 @@ see also [the fixture file](test/fixtures/features.js).
 | entry with mixed-case type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with uppercase type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✘ | ✘ |
+| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✓ | ✘ |
 | string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✘ |
 | entry key with colon | ✓ | ✓ | ✓ | ✘ | ✘ | ✓ |
 | entry label with number | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -144,8 +144,8 @@ see also [the fixture file](test/fixtures/features.js).
 | string with mixed-case type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with uppercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| string value with string | ✘ | ✓ | ✓ | ✓ | ✘ | ✓ |
-| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✘ | ✘ |
+| string value with string | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✘ |
 | preamble with quoted string | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | preamble with string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | preamble with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
@@ -164,5 +164,5 @@ Data from `npm test`.
 | idea-reworked | 4.81ms ± 6.4% | 0.418ms ± 2.2% | 1.22e+3ms ± 17.1% |
 | astrocite | 2.83ms ± 4.3% | 1.03ms ± 4.2% | 2.43e+3ms ± 10.2% |
 | fiduswriter | 29.6ms ± 3.0% | 11.7ms ± 31.4% | 1.45e+5ms ± 13.6% |
-| zotero | 536ms ± 11.7% | 20.2ms ± 16.0% | 3.12e+4ms ± 10.3% |
+| zotero | 4.07ms ± 0.9% | 2.56ms ± 5.3% | 1.49e+4ms ± 4.1% |
 | bbt | 8.00ms ± 5.5% | 2.12ms ± 5.1% | 2.10e+4ms ± 9.9% |

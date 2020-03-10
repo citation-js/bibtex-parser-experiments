@@ -1,0 +1,159 @@
+// Adapted from https://gist.github.com/retorquere/110ba7ce9ee252c309c974672913fcca
+
+const Promise = undefined
+
+const Zotero = {
+  input: '',
+  pos: 0,
+  items: [],
+}
+
+Zotero.debug = function(msg) { }
+
+const ZU = Zotero.Utilities = { }
+Zotero.Utilities.trimInternal = function(str) { return str.trim() }
+Zotero.Utilities.trim = function(str) { return str.trim() }
+Zotero.Utilities.fieldIsValidForType = function() { return true }
+Zotero.Utilities.formatDate = function(spec) { return months[spec.month] }
+
+Zotero.Utilities.htmlSpecialChars = function(str) {
+	if (str && typeof str != 'string') {
+		Zotero.debug('#htmlSpecialChars: non-string arguments are deprecated. Update your code',
+			1, undefined, true);
+		str = str.toString();
+	}
+
+	if (!str) return '';
+
+	return str
+		.replace(/&/g, '&amp;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&apos;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/&lt;ZOTERO([^\/]+)\/&gt;/g, function (str, p1, offset, s) {
+		switch (p1) {
+			case 'BREAK':
+				return '<br/>';
+			case 'HELLIP':
+				return '&#8230;';
+			default:
+				return p1;
+		}
+	});
+}
+
+Zotero.Utilities.text2html = function (/**String**/ str, /**Boolean**/ singleNewlineIsParagraph) {
+	str = Zotero.Utilities.htmlSpecialChars(str);
+
+	// \n => <p>
+	if (singleNewlineIsParagraph) {
+		str = '<p>'
+				+ str.replace(/\n/g, '</p><p>')
+					.replace(/  /g, '&nbsp; ')
+			+ '</p>';
+	}
+	// \n\n => <p>, \n => <br/>
+	else {
+		str = '<p>'
+				+ str.replace(/\n\n/g, '</p><p>')
+					.replace(/\n/g, '<br/>')
+					.replace(/  /g, '&nbsp; ')
+			+ '</p>';
+	}
+	return str.replace(/<p>\s*<\/p>/g, '<p>&nbsp;</p>');
+}
+
+Zotero.Utilities.cleanAuthor = function(author, type, useComma) {
+	var allCaps = 'A-Z' +
+								'\u0400-\u042f';		//cyrilic
+
+	var allCapsRe = new RegExp('^[' + allCaps + ']+$');
+	var initialRe = new RegExp('^-?[' + allCaps + ']$');
+
+	if(typeof(author) != "string") {
+		throw new Error("cleanAuthor: author must be a string");
+	}
+
+	author = author.replace(/^[\s\u00A0\.\,\/\[\]\:]+/, '')
+								  .replace(/[\s\u00A0\.\,\/\[\]\:]+$/, '')
+								.replace(/[\s\u00A0]+/, ' ');
+
+	if(useComma) {
+		// Add spaces between periods
+		author = author.replace(/\.([^ ])/, ". $1");
+
+		var splitNames = author.split(/, ?/);
+		if(splitNames.length > 1) {
+			var lastName = splitNames[0];
+			var firstName = splitNames[1];
+		} else {
+			var lastName = author;
+		}
+	} else {
+		// Don't parse "Firstname Lastname [Country]" as "[Country], Firstname Lastname"
+		var spaceIndex = author.length;
+		do {
+			spaceIndex = author.lastIndexOf(" ", spaceIndex-1);
+			var lastName = author.substring(spaceIndex + 1);
+			var firstName = author.substring(0, spaceIndex);
+		} while (!/\w/.test(lastName[0]) && spaceIndex > 0)
+	}
+
+	if(firstName && allCapsRe.test(firstName) &&
+			firstName.length < 4 &&
+			(firstName.length == 1 || lastName.toUpperCase() != lastName)) {
+		// first name is probably initials
+		var newFirstName = "";
+		for(var i=0; i<firstName.length; i++) {
+			newFirstName += " "+firstName[i]+".";
+		}
+		firstName = newFirstName.substr(1);
+	}
+
+	//add periods after all the initials
+	if(firstName) {
+		var names = firstName.replace(/^[\s\.]+/,'')
+					.replace(/[\s\,]+$/,'')
+					//remove spaces surronding any dashes
+					.replace(/\s*([\u002D\u00AD\u2010-\u2015\u2212\u2E3A\u2E3B])\s*/,'-')
+					.split(/(?:[\s\.]+|(?=-))/);
+		var newFirstName = '';
+		for(var i=0, n=names.length; i<n; i++) {
+			newFirstName += names[i];
+			if(initialRe.test(names[i])) newFirstName += '.';
+			newFirstName += ' ';
+		}
+		firstName = newFirstName.replace(/ -/g,'-').trim();
+	}
+
+	return {firstName:firstName, lastName:lastName, creatorType:type};
+}
+
+var ZOTERO_TRANSLATOR_INFO = '''TRANSLATOR'''
+
+Zotero.Item = function(itemType) {
+  this.itemType = itemType
+  this.creators = []
+  this.notes = []
+}
+
+Zotero.Item.prototype.complete = function() {
+  Zotero.items.push(this)
+}
+
+Zotero.read = function(l) {
+  const t = Zotero.input.substr(Zotero.pos, l)
+  Zotero.pos += l
+  return t
+}
+
+module.exports = {
+  parse (bib) {
+    Zotero.input = bib
+    Zotero.pos = 0
+    Zotero.items.length = 0
+    doImport()
+    return Zotero.items
+  }
+}

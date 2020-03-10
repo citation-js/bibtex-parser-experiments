@@ -85,7 +85,8 @@ async function main() {
   console.log('|              | Init             | Time (single entry) | Time (3345 entries) |')
   console.log('|--------------|-----------------:|--------------------:|--------------------:|')
 
-  for (const parser of parsers) {
+  const altParsers = process.argv.slice(2)
+  for (const parser of altParsers.length ? altParsers : parsers) {
     await run(parser)
   }
 }
