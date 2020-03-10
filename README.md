@@ -157,6 +157,7 @@ see also [the fixture file](test/fixtures/features.js).
 | literal names and biblatex extended names | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | diacritics and subscript | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 > * gimmicks, either trivial or not relevant
 
 ## Performance

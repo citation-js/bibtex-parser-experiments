@@ -223,4 +223,16 @@ export default {
       type: "article"
     } ]
   },
+  'multi-argument commands': {
+    input: `@article{test,
+      title = {$\\frac 1 2$ and $\\frac{n}{2}$}
+    }`,
+    output: [ {
+      id: "test",
+      properties: {
+        title: "½ and ⁿ⁄₂"
+      },
+      type: "article"
+    } ]
+  },
 }
