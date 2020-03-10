@@ -24,8 +24,12 @@ export default {
     {
       a
     ,
-      title = "foo"
+      title="foo"
     }`,
+    output: FOO
+  },
+  'entry with trailing comma': {
+    input: `@book{a, title = "foo",}`,
     output: FOO
   },
 
@@ -67,17 +71,100 @@ export default {
   'entry value of number': {
     input: `@book{a, title = 2020}`,
     output: [{ type: 'book', id: 'a', properties: { title: 2020 } }],
-    gimmick: true // not a gimmick per se but `title: "2020"` is acceptable too
+    gimmick: 'REPRESENTATION'
   },
   'entry value with mid-and concatenation': {
     input: `@book{a, author = "foo an" # "d bar"}`,
     output: [{ type: 'book', id: 'a', properties: { author: ['foo', 'bar'] } }],
-    gimmick: true
+    gimmick: 'RARE'
   },
   'entry value with mid-command concatenation': {
     input: `@book{a, title = "foo \\copy" # "right{} bar"}`,
     output: [{ type: 'book', id: 'a', properties: { title: 'foo © bar' } }],
-    gimmick: true
+    gimmick: 'RARE'
+  },
+  'entry value with sentence-casing': {
+    input: `@article{test, title = {Stability {Analysis} and Optimization}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Stability Analysis and optimization'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with markup': {
+    input: `@article{test, title = {Stability Analysis and {\\emph{Optimization}}}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Stability analysis and <i>optimization</i>'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with literal names': {
+    input: `@article{test, author = {Bausch and Lomb and {Bausch and Lomb}}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        author: [
+          'Bausch',
+          'Lomb',
+          'Bausch and Lomb'
+        ]
+      },
+      type: 'article'
+    }]
+  },
+  'entry value with extended names (biblatex)': {
+    input: `@article{test, author = {family=Duchamp, given=Philippe, given-i={Ph}}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        author: [
+          'Duchamp'
+        ]
+      },
+      type: 'article'
+    }],
+    only: 'biblatex'
+  },
+  'entry value with verbatim fields': {
+    input: `@article{test, file = {files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        file: 'files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf'
+      },
+      type: 'article'
+    }]
+  },
+  'entry value with diacritics': {
+    input: `@article{test, publisher = {D{\\u{o}}\\"ead Poet Society}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        publisher: 'Dŏëad Poet Society'
+      },
+      type: 'article'
+    }]
+  },
+  'entry value with sub/superscript': {
+    input: `@article{test, publisher = {Dead Po$_{eee}$t Society}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        publisher: 'Dead Poₑₑₑt Society'
+      },
+      type: 'article'
+    }]
+  },
+  'entry value with multi-argument commands': {
+    input: `@article{test, title = {$\\frac 1 2$ and $\\frac{n}{2}$}}`,
+    output: [{ id: 'test', properties: { title: '½ and ⁿ⁄₂' }, type: 'article'}]
   },
   // TODO
   'TODO': {
@@ -157,82 +244,5 @@ export default {
     }`,
     output: [],
     only: 'natbib'
-  },
-  'sentence-casing': {
-    input: `@article{test,
-      title = {Stability {Analysis} and Optimization}
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        title: "Stability Analysis and optimization"
-      },
-      type: "article"
-    } ],
-  },
-  'markup': {
-    input: `@article{test,
-      title = {Stability Analysis and {\\emph{Optimization}}}
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        title: "Stability analysis and <i>optimization</i>"
-      },
-      type: "article"
-    } ],
-  },
-  'literal names and biblatex extended names': {
-    input: `@article{test,
-      author = {Bausch and Lomb and {Bausch and Lomb} and family=Duchamp, given=Philippe, given-i={Ph}}
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        author: [
-          "Bausch",
-          "Lomb",
-          "Bausch and Lomb",
-          "Duchamp"
-        ]
-      },
-      type: "article"
-    } ],
-  },
-  'verbatim fields': {
-    input: `@article{test,
-      file = {files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf}
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        file: "files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf"
-      },
-      type: "article"
-    } ]
-  },
-  'diacritics and subscript': {
-    input: `@article{test,
-      publisher =  { D{\\u{o}}\\}\\"ead Po$_{eee}$t Society},
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        publisher: "Dŏ}ëad Poₑₑₑt Society"
-      },
-      type: "article"
-    } ]
-  },
-  'multi-argument commands': {
-    input: `@article{test,
-      title = {$\\frac 1 2$ and $\\frac{n}{2}$}
-    }`,
-    output: [ {
-      id: "test",
-      properties: {
-        title: "½ and ⁿ⁄₂"
-      },
-      type: "article"
-    } ]
   },
 }

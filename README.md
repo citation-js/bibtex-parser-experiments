@@ -128,37 +128,41 @@ see also [the fixture file](test/fixtures/features.js).
 | entry with mixed-case type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with uppercase type | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✓ | ✘ |
-| string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✘ |
+| entry with spacing | ✓ | ✓ | ✘ | ✓ | ✓ | ✓ |
+| entry with trailing comma | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✓ |
 | entry key with colon | ✓ | ✓ | ✓ | ✘ | ✘ | ✓ |
 | entry label with number | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with colon | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with double quotes | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of quoted string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry value of braced string | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| entry value of number | ✘* | ✘* | ✓ | ✘* | ✘* | ✓ |
-| entry value with mid-and concatenation | ✘* | ✓ | ✘* | ✓ | ✘* | ✓ |
-| entry value with mid-command concatenation | ✘* | ✓ | ✘* | ✘* | ✘* | ✘* |
+| entry value of number | ✘¹ | ✘¹ | ✓ | ✘¹ | ✘¹ | ✓ |
+| entry value with mid-and concatenation | ✘² | ✓ | ✘² | ✓ | ✘² | ✓ |
+| entry value with mid-command concatenation | ✘² | ✓ | ✘² | ✘² | ✘² | ✘² |
+| entry value with sentence-casing | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
+| entry value with markup | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
+| entry value with literal names | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
+| entry value with extended names (biblatex) |   |   |   |   |   | ✓ |
+| entry value with verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with diacritics | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with sub/superscript | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | TODO |   |   |   |   |   |   |
 | string with lowercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with mixed-case type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with uppercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with parentheses | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string value with string | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
-| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✘ |
+| string value with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | preamble with quoted string | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | preamble with string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | preamble with concatenated string | ✘ | ✓ | ✘ | ✓ | ✓ | ✓ |
 | comment before entry | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | comment around entry (natbib) |   | ✓ |   |   |   |   |
 | comment around entry (biblatex) |   |   | ✓ | ✓ | ✓ | ✓ |
-| sentence-casing | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| markup | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| literal names and biblatex extended names | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| diacritics and subscript | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-> * gimmicks, either trivial or not relevant
+> ¹ undefined representation  
+> ² very unlikely to matter
 
 ## Performance
 

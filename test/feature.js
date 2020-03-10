@@ -17,10 +17,22 @@ const parsers = {
 }
 const FIXTURE = {
   PASS: '✓',
-  NO_SUPPORT: '✘*',
+  NO_SUPPORT: '✘',
   OTHER_CHOICE: ' ',
   FAIL: '✘'
 }
+const GIMMICK = {
+  REPRESENTATION: {
+    text: 'undefined representation',
+    number: null
+  },
+  RARE: {
+    text: 'very unlikely to matter',
+    number: null,
+  }
+}
+const SUPERSCRIPT_NUMBERS = ['¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹']
+const FOOTNOTES = []
 
 const console = global.console
 global.console = global.logger = {
@@ -46,7 +58,12 @@ async function parseFixture (parser, fixture) {
     return [FIXTURE.PASS, null]
   } catch (e) {
     if (fixture.gimmick) {
-      return [FIXTURE.NO_SUPPORT, e]
+      const gimmick = GIMMICK[fixture.gimmick]
+      if (!gimmick.number) {
+        gimmick.number = SUPERSCRIPT_NUMBERS.shift()
+        FOOTNOTES.push(`> ${gimmick.number} ${gimmick.text}`)
+      }
+      return [FIXTURE.NO_SUPPORT + gimmick.number, e]
     } else if (fixture.only) {
       return [FIXTURE.OTHER_CHOICE, null]
     } else {
@@ -100,7 +117,7 @@ async function testFixtures (filterPrefix) {
     console.log(`| ${fixtureName} | ${codes.join(' | ')} |`)
   }
 
-  console.log('> * gimmicks, either trivial or not relevant')
+  console.log(FOOTNOTES.join('  \n'))
 }
 
 async function main () {
