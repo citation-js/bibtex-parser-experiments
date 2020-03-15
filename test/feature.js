@@ -11,6 +11,8 @@ const parsers = {
   'fiduswriter': null,
   'zotero': null,
   'bbt': null,
+  // In progress
+  // 'jabref': null,
   // Outdated with distractingly large error output
   // 'nearley': null,
   // 'idea': null
@@ -87,11 +89,12 @@ async function testParser (parserName, filterPrefix) {
     }
 
     let [code, error] = await parseFixture(parser, fixture)
-    switch (code) {
+    switch (code[0]) {
       case FIXTURE.PASS:
         console.log(`\x1B[32m${code}\x1B[39m`, fixtureName)
         break
       case FIXTURE.NO_SUPPORT:
+      case FIXTURE.OTHER_CHOICE:
       case FIXTURE.FAIL:
         console.log(`\x1B[31m${code}\x1B[39m`, fixtureName)
         console.log(prefixLines(error.toString(), '    '))

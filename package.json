@@ -29,7 +29,8 @@
     "biblatex-csl-converter": "^1.7.3",
     "moo": "^0.5.1",
     "nearley": "^2.19.0",
-    "translators-check": "git+https://github.com/zotero/translators.git"
+    "translators-check": "git+https://github.com/zotero/translators.git",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.0",

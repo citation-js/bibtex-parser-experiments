@@ -101,6 +101,17 @@ Using `@retorquere/bibtex-parser`, this performs very well. It is capable of
 returning an AST. I have not had a chance to test out all the parser features
 for literal/text/name values yet.
 
+### JabRef
+
+JabRef is reference management software with Bib(La)TeX as the internal
+representation, so one can assume their support for parsing it to be pretty good.
+However, I have not found a way to export their internal representation in the
+level of detail required for passing the syntax tests. Similarly, as their program
+only partly supports a CLI (no stdio) and is written in Java, a performance
+comparison would not be very fair. For now, it is possible to test syntax features
+by uncommenting the `jabref` entry in `test/feature.js` and running
+`npm run features -- parser jabref`.
+
 ## API Features
 
 |                  | current | idea-reworked | astrocite | fiduswriter | zotero | bbt  |
