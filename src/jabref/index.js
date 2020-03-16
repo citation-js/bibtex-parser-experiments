@@ -14,7 +14,7 @@ export async function parse (input) {
   const inputFile = path.join(tmp, 'input.bib')
   const outputFile = path.join(tmp, 'output.xml')
   await fs.writeFile(inputFile, input)
-  await exec(`/opt/jabref/bin/JabRef -n -console -i ${inputFile},bibtex -o ${outputFile},bibtexml`, opts)
+  await exec(`/tmp/jabref/bin/JabRef -n -console -i ${inputFile},bibtex -o ${outputFile},bibtexml`, opts)
   const output = await fs.readFile(outputFile, 'utf8')
   await exec(`rm -r ${tmp}`, opts)
   return parseString(output)

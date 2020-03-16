@@ -5,6 +5,7 @@ install:
   - npm install
   - npm run astrocite
   - npm run zotero
+  # - npm run jabref
   - npm run babel
 script:
   - npm test
