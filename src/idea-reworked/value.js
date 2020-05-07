@@ -30,6 +30,14 @@ const lexer = moo.states({
 
 export const valueGrammar = new Grammar({
   String () {
+    let output = ''
+    while (!this.matchEndOfFile()) {
+      output += this.consumeRule('Text')
+    }
+    return output
+  },
+
+  StringList () {
     let list = []
     let output = ''
     while (!this.matchEndOfFile()) {
@@ -43,6 +51,49 @@ export const valueGrammar = new Grammar({
     }
     list.push(output)
     return list
+  },
+
+  StringSeparated () {
+    let list = []
+    let output = ''
+    while (!this.matchEndOfFile()) {
+      if (this.matchToken('text')) {
+        const [prefix, ...parts] = this.consumeToken('text').split(',')
+        list.push(output + prefix)
+        if (parts.length) {
+          output = parts.pop()
+          list.push(...parts)
+        } else {
+          output = ''
+        }
+      } else {
+        output += this.consumeRule('Text')
+      }
+    }
+    list.push(output)
+    return list
+  },
+
+  StringVerbatim () {
+    let output = ''
+    while (!this.matchEndOfFile()) {
+      output += this.consumeToken().value
+    }
+    return output
+  },
+
+  StringUri () {
+    const uri = this.consumeRule('StringVerbatim')
+    try {
+      if (decodeURI(uri) === uri) {
+        return encodeURI(uri)
+      } else {
+        return uri
+      }
+    } catch (e) {
+      // malformed URI
+      return uri
+    }
   },
 
   BracketString () {
@@ -61,8 +112,12 @@ export const valueGrammar = new Grammar({
     while (!this.matchToken('mathShift')) {
       if (this.matchToken('script')) {
         const script = this.consumeToken('script').value
-        const text = this.consumeRule('Text').replace(/^{|}$/g, '')
-        output += constants.mathScripts[script][text[0]] + text.slice(1)
+        const text = this.consumeRule('Text').replace(/^{|}$/g, '').split('')
+        if (text.every(char => char in constants.mathScripts[script])) {
+          output += text.map(char => constants.mathScripts[script][char]).join('')
+        } else {
+          output += formatting[script].join(text.join(''))
+        }
       } else {
         output += this.consumeRule('Text')
       }
@@ -82,6 +137,10 @@ export const valueGrammar = new Grammar({
       this.consumeToken('whitespace')
       return ' '
 
+    } else if (this.matchToken('and')) {
+      this.consumeToken('and')
+      return ' and '
+
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
 
@@ -96,20 +155,30 @@ export const valueGrammar = new Grammar({
   Command () {
     const command = this.consumeToken('command').value.slice(1).trimEnd()
 
-    // command
-    if (command in constants.commands) {
+    // formatting envs
+    if (command in constants.formattingEnvs) {
+      const text = this.consumeRule('Env')
+      const markup = constants.formatting[constants.formattingEnvs[command]]
+      return markup.join(text)
+
+    // formatting commands
+    } else if (command in constants.formattingCommands) {
+      const text = this.consumeRule('BracketString')
+      const markup = constants.formatting[constants.formattingCommands[command]]
+      return markup.join(text)
+
+    // commands
+    } else if (command in constants.commands) {
       return constants.commands[command]
 
     // diacritics
     } else if (command in constants.diacritics && !this.matchEndOfFile()) {
-      if (this.matchToken('text')) {
-        const text = this.consumeToken('text').value
-        return text[0] + constants.diacritics[command] + text.slice(1)
-      } else {
-        return this.consumeRule('Text') + constants.diacritics[command]
-      }
+      const text = this.consumeRule('Text')
+      const diacritic = text[0] + constants.diacritics[command]
+      return diacritic.normalize('NFC') + text.slice(1)
 
     // escapes
+    // TODO exclude backslash, tilde
     } else if (/^\W$/.test(command)) {
       return command
 
@@ -117,9 +186,41 @@ export const valueGrammar = new Grammar({
     } else {
       return '\\' + command
     }
+  },
+
+  Env () {
+    let output = ''
+    while (!this.matchToken('rbrace')) {
+      if (this.matchEndOfFile()) {
+        break
+      }
+
+      if (this.matchToken('command')) {
+        // test for \end{}, \bf etc.
+      }
+
+      output += this.consumeRule('Text')
+    }
+    return output
   }
 })
 
-export function parse (text) {
-  return valueGrammar.parse(lexer.reset(text))
+function getStringRule (fieldType) {
+  switch (fieldType) {
+    case 'list':
+      return 'StringList'
+    case 'separated':
+      return 'StringSeparated'
+    case 'verbatim':
+      return 'StringVerbatim'
+    case 'uri':
+      return 'StringUri'
+    default:
+      return 'String'
+  }
+}
+
+export function parse (text, field) {
+  const mainRule = getStringRule(constants.fieldTypes[field])
+  return valueGrammar.parse(lexer.reset(text), mainRule)
 }

@@ -54,7 +54,7 @@ const lexer = moo.states({
   bracedLiteral: {
     lbrace: { match: '{', push: 'bracedLiteral' },
     rbrace: { match: '}', pop: true },
-    text: { match: /[^{}]+/, lineBreaks: true }
+    text: { match: /(?:\\}|[^{}])+/, lineBreaks: true }
   }
 })
 
@@ -138,7 +138,8 @@ export const bibtexGrammar = new Grammar({
 
     while (this.matchToken('identifier')) {
       let [field, value] = this.consumeRule('Field')
-      properties[field] = value
+      // TODO: keep numeric values
+      properties[field] = parseValue(value, field)
 
       this.consumeRule('_')
       if (this.consumeToken('comma', true)) {
@@ -174,9 +175,7 @@ export const bibtexGrammar = new Grammar({
       this.consumeRule('_')
     }
 
-    // TODO: Expression in @string entries should never split
-    // TODO: keep numeric values
-    return parseValue(output)
+    return output
   },
 
   ExpressionPart () {
