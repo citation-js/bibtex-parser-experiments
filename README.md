@@ -152,12 +152,14 @@ see also [the fixture file](test/fixtures/features.js).
 | entry value with mid-and concatenation | ✘² | ✓ | ✘² | ✓ | ✘² | ✓ |
 | entry value with mid-command concatenation | ✘² | ✓ | ✘² | ✘² | ✘² | ✘² |
 | entry value with sentence-casing | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
-| entry value with markup | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
+| entry value with markup | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | entry value with literal names | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
 | entry value with extended names (biblatex) |   |   |   |   |   | ✓ |
-| entry value with verbatim fields | ✓ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| entry value with diacritics | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
-| entry value with sub/superscript | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with verbatim fields | ✓ | ✓ |   |   |   | ✓ |
+| entry value with uri fields |   | ✓ |   |   |   |   |
+| entry value with pre-encoded uri fields | ✓ | ✓ | ✓ |   |   | ✓ |
+| entry value with diacritics | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
+| entry value with sub/superscript | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
 | entry value with multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
 | TODO |   |   |   |   |   |   |
 | string with lowercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
