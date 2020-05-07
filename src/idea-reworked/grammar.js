@@ -75,6 +75,10 @@ export class Grammar {
    * @return whatever the rule function returns
    */
   consumeRule (rule) {
+    if (typeof this.rules[rule] !== 'function') {
+      throw new Error(`Rule "${rule}" does not exist in this grammar`)
+    }
+
     this.log.push(rule)
     const result = this.rules[rule].call(this)
     this.log.pop()
