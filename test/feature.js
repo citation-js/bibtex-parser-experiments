@@ -67,7 +67,7 @@ async function parseFixture (parser, fixture) {
       }
       return [FIXTURE.NO_SUPPORT + gimmick.number, e]
     } else if (fixture.only) {
-      return [FIXTURE.OTHER_CHOICE, null]
+      return [FIXTURE.OTHER_CHOICE, e]
     } else {
       return [FIXTURE.FAIL, e]
     }

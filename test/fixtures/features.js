@@ -95,7 +95,7 @@ export default {
     gimmick: 'REPRESENTATION'
   },
   'entry value with markup': {
-    input: `@article{test, title = {Stability Analysis and {\\emph{Optimization}}}}`,
+    input: `@article{test, title = {Stability analysis and {\\emph{optimization}}}}`,
     output: [{
       id: 'test',
       properties: {
@@ -140,7 +140,30 @@ export default {
         file: 'files/Zuniga:2016jt/A4FA1025_A4E7{}422A-9368-1E1F1B9B0166.pdf'
       },
       type: 'article'
-    }]
+    }],
+    only: 'biblatex'
+  },
+  'entry value with uri fields': {
+    input: `@article{test, url = {https://example.com/test{thing}}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        url: 'https://example.com/test%7Bthing%7D'
+      },
+      type: 'article'
+    }],
+    only: 'biblatex'
+  },
+  'entry value with pre-encoded uri fields': {
+    input: `@article{test, url = {https://example.com/test%7Bthing%7D}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        url: 'https://example.com/test%7Bthing%7D'
+      },
+      type: 'article'
+    }],
+    only: 'biblatex'
   },
   'entry value with diacritics': {
     input: `@article{test, publisher = {D{\\u{o}}\\"ead Poet Society}}`,
