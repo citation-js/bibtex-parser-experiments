@@ -25,7 +25,7 @@ const FIXTURE = {
 }
 const GIMMICK = {
   REPRESENTATION: {
-    text: 'undefined representation',
+    text: 'undefined representation, actual support may vary',
     number: null
   },
   RARE: {

@@ -174,7 +174,7 @@ see also [the fixture file](test/fixtures/features.js).
 | comment before entry | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | comment around entry (natbib) |   | ✓ |   |   |   |   |
 | comment around entry (biblatex) |   |   | ✓ | ✓ | ✓ | ✓ |
-> ¹ undefined representation  
+> ¹ undefined representation, actual support may vary  
 > ² very unlikely to matter
 
 ## Performance
