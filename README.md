@@ -179,13 +179,13 @@ see also [the fixture file](test/fixtures/features.js).
 
 ## Performance
 
-Data from `npm test`.
+Data from `npm test`, as [run on Travis CI](https://travis-ci.com/github/citation-js/bibtex-parser-experiments).
 
 |              | Init             | Time (single entry) | Time (3345 entries) |
 |--------------|-----------------:|--------------------:|--------------------:|
-| current | 0.962ms ± 2.8% | 1.15ms ± 5.3% | 3.28e+3ms ± 5.5% |
-| idea-reworked | 4.81ms ± 6.4% | 0.418ms ± 2.2% | 1.22e+3ms ± 17.1% |
-| astrocite | 2.83ms ± 4.3% | 1.03ms ± 4.2% | 2.43e+3ms ± 10.2% |
-| fiduswriter | 29.6ms ± 3.0% | 11.7ms ± 31.4% | 1.45e+5ms ± 13.6% |
-| zotero | 4.07ms ± 0.9% | 2.56ms ± 5.3% | 1.49e+4ms ± 4.1% |
-| bbt | 8.00ms ± 5.5% | 2.12ms ± 5.1% | 2.10e+4ms ± 9.9% |
+| current | 0.865ms ± 4.7% | 0.779ms ± 1.5% | 1.81e+3ms ± 4.3% |
+| idea-reworked | 3.86ms ± 2.1% | 0.381ms ± 8.6% | 933ms ± 7.1% |
+| astrocite | 1.74ms ± 2.1% | 0.602ms ± 2.5% | 1.92e+3ms ± 10.0% |
+| fiduswriter | 16.3ms ± 11.3% | 6.74ms ± 25.5% | 1.06e+5ms ± 0.5% |
+| zotero | 4.25ms ± 11.3% | 2.09ms ± 1.2% | 9.92e+3ms ± 0.8% |
+| bbt | 17.7ms ± 14.8% | 2.23ms ± 34.9% | 2.11e+4ms ± 1.8% |
