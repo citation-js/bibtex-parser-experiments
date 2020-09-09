@@ -1,30 +1,33 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
 import * as constants from './constants'
+import { orderNamePieces, getStringCase } from './name'
 
 const text = {
   command: /\\(?:[a-z]+|.) */,
   lbrace: { match: '{', push: 'bracedLiteral' },
   mathShift: { match: '$', push: 'mathLiteral' },
-  whitespace: { match: /\s+/, lineBreaks: true }
+  whitespace: { match: /[\s~]+/, lineBreaks: true }
 }
 
 const lexer = moo.states({
   stringLiteral: {
     and: ' and ',
+    comma: ',',
+    hyphen: '-',
     ...text,
-    text: /[^{$}\s\\]+/
+    text: /[^{$}\s~\\,-]+/
   },
   bracedLiteral: {
     ...text,
     rbrace: { match: '}', pop: true },
-    text: /[^{$}\s\\]+/
+    text: /[^{$}\s~\\]+/
   },
   mathLiteral: {
     ...text,
     mathShift: { match: '$', pop: true },
     script: /[\^_]/,
-    text: /[^{$}\s\\\^_]+/
+    text: /[^{$}\s~\\\^_]+/
   }
 })
 
@@ -35,6 +38,72 @@ export const valueGrammar = new Grammar({
       output += this.consumeRule('Text')
     }
     return output
+  },
+
+  StringNames () {
+    const list = []
+
+    while (true) {
+      this.consumeToken('whitespace', true)
+      list.push(this.consumeRule('Name'))
+      this.consumeToken('whitespace', true)
+
+      if (this.matchEndOfFile()) {
+        return list
+      } else {
+        this.consumeToken('and')
+      }
+    }
+  },
+
+  Name () {
+    const pieces = []
+
+    while (true) {
+      pieces.push(this.consumeRule('NamePiece'))
+
+      if (this.matchEndOfFile() || this.matchToken('and')) {
+        return orderNamePieces(pieces)
+      } else {
+        this.consumeToken('comma')
+        this.consumeToken('whitespace', true)
+      }
+    }
+  },
+
+  NamePiece () {
+    const parts = []
+
+    while (true) {
+      parts.push(this.consumeRule('NamePart'))
+
+      if (this.matchEndOfFile() || this.matchToken('and') || this.matchToken('comma')) {
+        return parts
+      } else {
+        while (this.matchToken('hyphen') || this.matchToken('whitespace')) {
+          this.consumeToken()
+        }
+      }
+    }
+  },
+
+  NamePart () {
+    let upperCase = null
+    let namePart = ''
+
+    while (true) {
+      if (upperCase === null && this.matchToken('text')) {
+        const text = this.consumeToken().value
+        namePart += text
+        upperCase = getStringCase(text)
+      } else if (this.matchEndOfFile() || this.matchToken('and') || this.matchToken('comma') || this.matchToken('whitespace')) {
+        return { upperCase, namePart }
+      } else if (this.matchToken('hyphen')) {
+        return { upperCase, namePart, hyphenated: true }
+      } else {
+        namePart += this.consumeRule('Text')
+      }
+    }
   },
 
   StringList () {
@@ -57,15 +126,10 @@ export const valueGrammar = new Grammar({
     let list = []
     let output = ''
     while (!this.matchEndOfFile()) {
-      if (this.matchToken('text')) {
-        const [prefix, ...parts] = this.consumeToken('text').value.split(',')
-        list.push(output + prefix)
-        if (parts.length) {
-          output = parts.pop()
-          list.push(...parts)
-        } else {
-          output = ''
-        }
+      if (this.matchToken('comma')) {
+        this.consumeToken('comma')
+        list.push(output)
+        output = ''
       } else {
         output += this.consumeRule('Text')
       }
@@ -134,12 +198,13 @@ export const valueGrammar = new Grammar({
       return this.consumeRule('MathString')
 
     } else if (this.matchToken('whitespace')) {
-      this.consumeToken('whitespace')
-      return ' '
+      const token = this.consumeToken('whitespace').value
+      return token[0] === '~' ? '\xa0' : ' ' // Non-breakable space
 
-    } else if (this.matchToken('and')) {
-      this.consumeToken('and')
-      return ' and '
+    } else if (this.matchToken('and') ||
+               this.matchToken('comma') ||
+               this.matchToken('hyphen')) {
+      return this.consumeToken().value
 
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
@@ -208,7 +273,7 @@ export const valueGrammar = new Grammar({
 function getStringRule (fieldType) {
   switch (fieldType) {
     case 'list':
-      return 'StringList'
+      return 'StringNames'
     case 'separated':
       return 'StringSeparated'
     case 'verbatim':
