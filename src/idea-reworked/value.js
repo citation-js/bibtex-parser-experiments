@@ -58,7 +58,7 @@ export const valueGrammar = new Grammar({
     let output = ''
     while (!this.matchEndOfFile()) {
       if (this.matchToken('text')) {
-        const [prefix, ...parts] = this.consumeToken('text').split(',')
+        const [prefix, ...parts] = this.consumeToken('text').value.split(',')
         list.push(output + prefix)
         if (parts.length) {
           output = parts.pop()

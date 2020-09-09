@@ -70,10 +70,10 @@ export const formattingCommands = {
   textsc: 'smallcaps',
 
   textsuperscript: 'superscript',
-  '^': 'superscript',
+  // '^': 'superscript',
 
   textsubscript: 'subscript',
-  '_': 'subscript'
+  // '_': 'subscript'
 }
 
 export const formatting = {
