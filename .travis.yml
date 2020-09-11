@@ -9,4 +9,4 @@ install:
   - npm run babel
 script:
   - npm test
-  - npm run benchmark
+  - npm run features fixtures
