@@ -145,33 +145,30 @@ export const valueGrammar = new Grammar({
 
   StringList () {
     let list = []
-    let output = ''
     while (!this.matchEndOfFile()) {
-      if (this.matchToken('and')) {
-        this.consumeToken('and')
-        list.push(output)
-        output = ''
-      } else {
+      let output = ''
+      while (!this.matchEndOfFile() && !this.matchToken('and')) {
         output += this.consumeRule('Text')
       }
+      list.push(output)
+
+      this.consumeToken('and', true)
     }
-    list.push(output)
     return list.length === 1 ? list[0] : list
   },
 
   StringSeparated () {
     let list = []
-    let output = ''
     while (!this.matchEndOfFile()) {
-      if (this.matchToken('comma')) {
-        this.consumeToken('comma')
-        list.push(output)
-        output = ''
-      } else {
+      let output = ''
+      while (!this.matchEndOfFile() && !this.matchToken('comma')) {
         output += this.consumeRule('Text')
       }
+      list.push(output.trim())
+
+      this.consumeToken('comma', true)
+      this.consumeToken('whitespace', true)
     }
-    list.push(output)
     return list
   },
 
