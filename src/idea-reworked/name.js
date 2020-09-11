@@ -19,7 +19,7 @@ export function getStringCase (string) {
  * @param {Array<Object>} parts
  * @return {String|undefined}
  */
-function formatNameParts (parts) {
+export function formatNameParts (parts) {
   if (parts.length === 0) {
     return undefined
   }
@@ -27,29 +27,29 @@ function formatNameParts (parts) {
   let piece = ''
 
   while (parts.length > 1) {
-    const { namePart, hyphenated } = parts.shift()
-    piece += namePart + (hyphenated ? '-' : ' ')
+    const { value, hyphenated } = parts.shift()
+    piece += value + (hyphenated ? '-' : ' ')
   }
 
-  return piece + parts[0].namePart || undefined
+  return piece + parts[0].value || undefined
 }
 
 /**
  * @param {Array<Object>} parts
- * @param {Boolean} [orderFirst=true] - also consider the first name
+ * @param {Boolean} [orderGiven=true] - also consider the given name
  * @return {Array<String>}
  */
-export function orderNameParts (parts, orderFirst = true) {
-  const first = []
+export function orderNameParts (parts, orderGiven = true) {
+  const given = []
   const undecided = []
 
-  if (orderFirst) {
+  if (orderGiven) {
     while (parts.length > 1 && parts[0].upperCase !== false) {
-      first.push(...undecided)
+      given.push(...undecided)
       undecided.length = 0
 
       while (parts.length > 1 && parts[0].upperCase !== false && !parts[0].hyphenated) {
-        first.push(parts.shift())
+        given.push(parts.shift())
       }
 
       while (parts.length > 0 && parts[0].upperCase !== false && parts[0].hyphenated) {
@@ -58,33 +58,33 @@ export function orderNameParts (parts, orderFirst = true) {
     }
   }
 
-  const von = []
-  const last = []
+  const prefix = []
+  const family = []
 
   while (parts.length > 1) {
-    von.push(...last)
-    last.length = 0
+    prefix.push(...family)
+    family.length = 0
 
     while (parts.length > 1 && parts[0].upperCase === false) {
-      von.push(parts.shift())
+      prefix.push(parts.shift())
     }
 
     while (parts.length > 0 && parts[0].upperCase !== false) {
-      last.push(parts.shift())
+      family.push(parts.shift())
     }
   }
 
   if (undecided.length) {
-    last.unshift(...undecided)
+    family.unshift(...undecided)
   }
   if (parts.length) {
-    last.push(parts[0])
+    family.push(parts[0])
   }
 
   return [
-    formatNameParts(first),
-    formatNameParts(von),
-    formatNameParts(last)
+    formatNameParts(given),
+    formatNameParts(prefix),
+    formatNameParts(family)
   ]
 }
 
@@ -93,31 +93,35 @@ export function orderNameParts (parts, orderFirst = true) {
  * @return {Object}
  */
 export function orderNamePieces (pieces) {
-  if (pieces.length === 1 && pieces[0].length === 1) {
-    return { last: pieces[0][0].namePart }
+  if (pieces.length === 0 || pieces[0].length === 0) {
+    return { family: '' }
   }
 
-  if (pieces.length === 0 || pieces.length > 3) {
-    return { last: formatNameParts(pieces.flat()) }
+  if (pieces[0][0].label) {
+    const name = {}
+    for (const [{ value, label }] of pieces) {
+      name[label] = value
+    }
+    return name
   }
 
   const name = {}
-  const [first, von, last] = orderNameParts(pieces[0], pieces.length === 1)
+  const [given, prefix, family] = orderNameParts(pieces[0], pieces.length === 1)
 
-  if (last) {
-    name.last = last
+  if (family) {
+    name.family = family
   }
-  if (von) {
-    name.von = von
+  if (prefix) {
+    name.prefix = prefix
   }
 
   if (pieces.length === 3) {
-    name.first = formatNameParts(pieces[2])
-    name.jr = formatNameParts(pieces[1])
+    name.given = formatNameParts(pieces[2])
+    name.suffix = formatNameParts(pieces[1])
   } else if (pieces.length === 2) {
-    name.first = formatNameParts(pieces[1])
-  } else if (first) {
-    name.first = first
+    name.given = formatNameParts(pieces[1])
+  } else if (given) {
+    name.given = given
   }
 
   return name

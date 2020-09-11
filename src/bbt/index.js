@@ -25,8 +25,23 @@ function fieldsObject(fields) {
   return Object.fromEntries(Object.entries(fields).map(([key, value]) => [key, _astToText(value)]))
 }
 
+function creatorObject(creator) {
+  const name = {}
+
+  if (creator.firstName) { name.given = creator.firstName }
+  if (creator.prefix) { name.prefix = creator.prefix }
+  if (creator.suffix) { name.suffix = creator.suffix }
+  if (creator.initial) { name['given-i'] = creator.initial }
+  if (creator.lastName) {
+    name.family = creator.lastName
+    return name
+  } else {
+    return { family: creator.literal }
+  }
+}
+
 function creatorsObject(creators) {
-  return Object.fromEntries(Object.entries(creators).map(([type, names]) => [type, names.map(name => name.lastName || name.literal)]))
+  return Object.fromEntries(Object.entries(creators).map(([type, names]) => [type, names.map(creatorObject)]))
 }
 
 export function _intoFixtureOutput (result) {

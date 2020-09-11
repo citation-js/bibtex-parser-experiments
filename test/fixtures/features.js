@@ -75,7 +75,10 @@ export default {
   },
   'entry value with mid-and concatenation': {
     input: `@book{a, author = "foo an" # "d bar"}`,
-    output: [{ type: 'book', id: 'a', properties: { author: ['foo', 'bar'] } }],
+    output: [{ type: 'book', id: 'a', properties: { author: [
+      { family: 'foo' },
+      { family: 'bar' }
+    ] } }],
     gimmick: 'RARE'
   },
   'entry value with mid-command concatenation': {
@@ -111,21 +114,21 @@ export default {
       id: 'test',
       properties: {
         author: [
-          'Bausch',
-          'Lomb',
-          'Bausch and Lomb'
+          { family: 'Bausch' },
+          { family: 'Lomb' },
+          { family: 'Bausch and Lomb' }
         ]
       },
       type: 'article'
     }]
   },
   'entry value with extended names (biblatex)': {
-    input: `@article{test, author = {family=Duchamp, given=Philippe, given-i={Ph}}}`,
+    input: `@article{test, author = {family=Duchamp, given=Philippe, given-i=Ph}}`,
     output: [{
       id: 'test',
       properties: {
         author: [
-          'Duchamp'
+          { family: 'Duchamp', given: 'Philippe', 'given-i': 'Ph' }
         ]
       },
       type: 'article'

@@ -138,8 +138,7 @@ export const bibtexGrammar = new Grammar({
 
     while (this.matchToken('identifier')) {
       let [field, value] = this.consumeRule('Field')
-      // TODO: keep numeric values
-      properties[field] = parseValue(value, field)
+      properties[field] = typeof value === 'number' ? value : parseValue(value, field)
 
       this.consumeRule('_')
       if (this.consumeToken('comma', true)) {
@@ -165,13 +164,13 @@ export const bibtexGrammar = new Grammar({
   },
 
   Expression () {
-    let output = this.consumeRule('ExpressionPart').toString()
+    let output = this.consumeRule('ExpressionPart')
     this.consumeRule('_')
 
     while (this.matchToken('hash')) {
       this.consumeToken('hash')
       this.consumeRule('_')
-      output += this.consumeRule('ExpressionPart')
+      output += this.consumeRule('ExpressionPart').toString()
       this.consumeRule('_')
     }
 
@@ -225,18 +224,6 @@ export function parse (text) {
   return bibtexGrammar.parse(lexer.reset(text))
 }
 
-function _astToText (value) {
-  if (value.length === 1) {
-    return value[0]
-  } else {
-    return value
-  }
-}
-
 export function _intoFixtureOutput (result) {
-  return result.map(({ type, label, properties }) => ({
-    type,
-    id: label,
-    properties: Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, _astToText(value)]))
-  }))
+  return result.map(({ type, label, properties }) => ({ type, id: label, properties }))
 }

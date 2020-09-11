@@ -1,7 +1,7 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
 import * as constants from './constants'
-import { orderNamePieces, getStringCase } from './name'
+import { orderNamePieces, formatNameParts, getStringCase } from './name'
 
 const text = {
   command: /\\(?:[a-z]+|.) */,
@@ -12,11 +12,26 @@ const text = {
 
 const lexer = moo.states({
   stringLiteral: {
+    ...text,
+    text: /[^{$}\s~\\]+/
+  },
+  namesLiteral: {
     and: ' and ',
     comma: ',',
     hyphen: '-',
+    equals: '=',
     ...text,
-    text: /[^{$}\s~\\,-]+/
+    text: /[^{$}\s~\\,=-]+/
+  },
+  listLiteral: {
+    and: ' and ',
+    ...text,
+    text: /[^{$}\s~\\]+/
+  },
+  separatedLiteral: {
+    comma: ',',
+    ...text,
+    text: /[^{$}\s~\\,]+/
   },
   bracedLiteral: {
     ...text,
@@ -75,7 +90,14 @@ export const valueGrammar = new Grammar({
     const parts = []
 
     while (true) {
-      parts.push(this.consumeRule('NamePart'))
+      const part = this.consumeRule('NameToken')
+
+      if (part.label) {
+        part.label = formatNameParts([...parts, { value: part.label }])
+        return [part]
+      }
+
+      parts.push(part)
 
       if (this.matchEndOfFile() || this.matchToken('and') || this.matchToken('comma')) {
         return parts
@@ -87,21 +109,36 @@ export const valueGrammar = new Grammar({
     }
   },
 
-  NamePart () {
+  NameToken () {
     let upperCase = null
-    let namePart = ''
+    let value = ''
 
     while (true) {
+      // If needed, test regular text for case
       if (upperCase === null && this.matchToken('text')) {
         const text = this.consumeToken().value
-        namePart += text
+        value += text
         upperCase = getStringCase(text)
+
+      // If end of name part, return up
       } else if (this.matchEndOfFile() || this.matchToken('and') || this.matchToken('comma') || this.matchToken('whitespace')) {
-        return { upperCase, namePart }
+        return { value, upperCase }
+
+      // Same for hyphen, but note it is hyphenated
       } else if (this.matchToken('hyphen')) {
-        return { upperCase, namePart, hyphenated: true }
+        return { value, upperCase, hyphenated: true }
+
+      // If equals we are in BibLaTeX extended mode
+      // 'family=Last, given=First, prefix=von'
+      } else if (this.matchToken('equals')) {
+        this.consumeToken('equals')
+        const text = this.consumeRule('NamePiece')
+        if (text[0].label) { value += '=' + text[0].label }
+        return { value: formatNameParts(text), label: value }
+
+      // Else consume other text
       } else {
-        namePart += this.consumeRule('Text')
+        value += this.consumeRule('Text')
       }
     }
   },
@@ -119,7 +156,7 @@ export const valueGrammar = new Grammar({
       }
     }
     list.push(output)
-    return list
+    return list.length === 1 ? list[0] : list
   },
 
   StringSeparated () {
@@ -201,11 +238,6 @@ export const valueGrammar = new Grammar({
       const token = this.consumeToken('whitespace').value
       return token[0] === '~' ? '\xa0' : ' ' // Non-breakable space
 
-    } else if (this.matchToken('and') ||
-               this.matchToken('comma') ||
-               this.matchToken('hyphen')) {
-      return this.consumeToken().value
-
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
 
@@ -270,10 +302,14 @@ export const valueGrammar = new Grammar({
   }
 })
 
-function getStringRule (fieldType) {
-  switch (fieldType) {
+function getMainRule (fieldType) {
+  if (fieldType[1] === 'name') {
+    return fieldType[0] === 'list' ? 'StringNames' : 'Name'
+  }
+
+  switch (fieldType[0] === 'field' ? fieldType[1] : fieldType[0]) {
     case 'list':
-      return 'StringNames'
+      return 'StringList'
     case 'separated':
       return 'StringSeparated'
     case 'verbatim':
@@ -285,7 +321,24 @@ function getStringRule (fieldType) {
   }
 }
 
+function getLexerState (fieldType) {
+  if (fieldType[1] === 'name') {
+    return 'namesLiteral'
+  }
+
+  switch (fieldType[0]) {
+    case 'list':
+      return 'listLiteral'
+    case 'separated':
+      return 'separatedLiteral'
+    default:
+      return 'stringLiteral'
+  }
+}
+
 export function parse (text, field) {
-  const mainRule = getStringRule(constants.fieldTypes[field])
-  return valueGrammar.parse(lexer.reset(text), mainRule)
+  const fieldType = constants.fieldTypes[field] || []
+  return valueGrammar.parse(lexer.reset(text, {
+    state: getLexerState(fieldType)
+  }), getMainRule(fieldType))
 }
