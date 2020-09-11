@@ -154,6 +154,7 @@ see also [the fixture file](test/fixtures/features.js).
 | entry value with sentence-casing | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | entry value with markup | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | entry value with literal names | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
+| entry value with truncated names | ✘² | ✘² | ✘² | ✘² | ✘² | ✘² |
 | entry value with extended names (biblatex) |   | ✓ |   |   |   | ✓ |
 | entry value with verbatim fields | ✓ | ✓ |   |   |   | ✓ |
 | entry value with uri fields |   | ✓ |   |   |   |   |

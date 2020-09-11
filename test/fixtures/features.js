@@ -122,6 +122,20 @@ export default {
       type: 'article'
     }]
   },
+  'entry value with truncated names': {
+    input: `@article{test, author = {Bausch and Lomb and others}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        author: [
+          { family: 'Bausch' },
+          { family: 'Lomb' }
+        ]
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
   'entry value with extended names (biblatex)': {
     input: `@article{test, author = {family=Duchamp, given=Philippe, given-i=Ph}}`,
     output: [{
