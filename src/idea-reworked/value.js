@@ -214,7 +214,8 @@ export const valueGrammar = new Grammar({
         if (text.every(char => char in constants.mathScripts[script])) {
           output += text.map(char => constants.mathScripts[script][char]).join('')
         } else {
-          output += formatting[script].join(text.join(''))
+          const formatName = constants.mathScriptFormatting[script]
+          output += constants.formatting[formatName].join(text.join(''))
         }
       } else {
         output += this.consumeRule('Text')

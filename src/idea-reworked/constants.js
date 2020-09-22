@@ -70,10 +70,7 @@ export const formattingCommands = {
   textsc: 'smallcaps',
 
   textsuperscript: 'superscript',
-  // '^': 'superscript',
-
-  textsubscript: 'subscript',
-  // '_': 'subscript'
+  textsubscript: 'subscript'
 }
 
 export const formatting = {
@@ -93,6 +90,11 @@ export const ligatures = {
   '``': '\u201C',
   "''": '\u201D',
   '~': '\u00A0'
+}
+
+export const mathScriptFormatting = {
+  '^': 'superscript',
+  '_': 'subscript'
 }
 
 export const mathScripts = {
