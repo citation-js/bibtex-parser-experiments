@@ -86,12 +86,34 @@ export default {
     output: [{ type: 'book', id: 'a', properties: { title: 'foo © bar' } }],
     gimmick: 'RARE'
   },
-  'entry value with sentence-casing': {
+  'entry value with sentence-casing (real title)': {
     input: `@article{test, title = {Stability {Analysis} and Optimization}}`,
     output: [{
       id: 'test',
       properties: {
         title: 'Stability Analysis and optimization'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with sentence-casing (artificial title)': {
+    input: `@article{test, title = "aa aa {aa} AA {AA} Aa {Aa}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'aa aa <span class="nocase">aa</span> aa AA aa Aa'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with sentence-casing (markup)': {
+    input: `@article{test, title = "A \\emph{A} \\emph{{A}} {\\emph{A}} {\\emph{{A}}} {{\\emph{A}}}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'A <i>A</i> <i>A</i> <i>a</i> <i>a</i> <i>A</i>'
       },
       type: 'article'
     }],
