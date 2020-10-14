@@ -194,6 +194,75 @@ export const valueGrammar = new Grammar({
     }
   },
 
+  StringTitleCase () {
+    let output = ''
+
+    let firstToken = true
+    while (!this.matchEndOfFile()) {
+      // Top-level bracket strings should preserve case, unless the first token
+      // inside is a command. The latter part is handled in BracketStringTitleCase.
+      if (this.matchToken('lbrace')) {
+        output += this.consumeRule('BracketStringTitleCase')
+
+      // If commands are *not* enclosed in brackets, any bracket arguments count
+      // as top-level bracket strings (the same with envs like \em).
+      } else if (this.matchToken('command')) {
+        output += this.consumeRule('CommandTitleCase')
+
+      // Other text should be lowercased to convert the title-case string to
+      // sentence-case. The first letter of the entire string should always be
+      // capitalised.
+      } else {
+        const text = this.consumeRule('Text')
+        const textLowerCase = text.toLowerCase()
+        // TODO dumb unicode assumptions)
+        output += firstToken ? text[0] + textLowerCase.slice(1) : textLowerCase
+      }
+
+      firstToken = false
+    }
+
+    return output
+  },
+
+  BracketStringTitleCase () {
+    let output = ''
+
+    this.consumeToken('lbrace')
+
+    const preserveCase = !this.matchToken('command')
+    let caseToPreserve = preserveCase
+
+    while (!this.matchToken('rbrace')) {
+      const text = this.consumeRule('Text')
+      const textLowerCase = text.toLowerCase()
+
+      caseToPreserve = caseToPreserve && text === textLowerCase
+      output += preserveCase ? text : textLowerCase
+    }
+
+    this.consumeToken('rbrace')
+
+    return caseToPreserve && output ? constants.formatting.nocase.join(output) : output
+  },
+
+  CommandTitleCase () {
+    // Peaking the token :(
+    const command = this.token.value.slice(1).trimEnd()
+
+    // TODO formatting envs
+    if (command in constants.formattingCommands) {
+      this.consumeToken('command')
+      const text = this.consumeRule('BracketStringTitleCase')
+      const markup = constants.formatting[constants.formattingCommands[command]]
+      return markup.join(text)
+
+    // other
+    } else {
+      return this.consumeRule('Command')
+    }
+  },
+
   BracketString () {
     let output = ''
     this.consumeToken('lbrace')
@@ -210,7 +279,7 @@ export const valueGrammar = new Grammar({
     while (!this.matchToken('mathShift')) {
       if (this.matchToken('script')) {
         const script = this.consumeToken('script').value
-        const text = this.consumeRule('Text').replace(/^{|}$/g, '').split('')
+        const text = this.consumeRule('Text').split('')
         if (text.every(char => char in constants.mathScripts[script])) {
           output += text.map(char => constants.mathScripts[script][char]).join('')
         } else {
@@ -234,7 +303,7 @@ export const valueGrammar = new Grammar({
 
     } else if (this.matchToken('whitespace')) {
       const token = this.consumeToken('whitespace').value
-      return token[0] === '~' ? '\xa0' : ' ' // Non-breakable space
+      return token[0] === '~' ? '\xa0' : ' ' // \xa0 = Non-breakable space
 
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
@@ -291,7 +360,7 @@ export const valueGrammar = new Grammar({
       }
 
       if (this.matchToken('command')) {
-        // test for \end{}, \bf etc.
+        // TODO test for \end{}, \bf etc.
       }
 
       output += this.consumeRule('Text')
@@ -314,6 +383,9 @@ function getMainRule (fieldType) {
       return 'StringVerbatim'
     case 'uri':
       return 'StringUri'
+    case 'title':
+      return 'StringTitleCase'
+    case 'literal':
     default:
       return 'String'
   }
@@ -329,6 +401,7 @@ function getLexerState (fieldType) {
       return 'listLiteral'
     case 'separated':
       return 'separatedLiteral'
+    case 'field':
     default:
       return 'stringLiteral'
   }
