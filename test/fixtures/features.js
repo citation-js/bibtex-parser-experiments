@@ -159,7 +159,7 @@ export default {
     gimmick: 'REPRESENTATION'
   },
   'entry value with extended names (biblatex)': {
-    input: `@article{test, author = {family=Duchamp, given=Philippe, given-i=Ph}}`,
+    input: `@article{test, author = {family=Duchamp, given=Philippe, given-i={Ph}}}`,
     output: [{
       id: 'test',
       properties: {
