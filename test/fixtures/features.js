@@ -119,12 +119,36 @@ export default {
     }],
     gimmick: 'REPRESENTATION'
   },
+  'entry value with sentence-casing (env markup)': {
+    input: `@article{test, title = "A {\\em A} \\begin{em}A\\end{em} \\begin{em}{A}\\end{em} {A \\em A}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'A <i>a</i> <i>a</i> <i>A</i> A <i>A</i>'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
   'entry value with markup': {
     input: `@article{test, title = {Stability analysis and {\\emph{optimization}}}}`,
     output: [{
       id: 'test',
       properties: {
         title: 'Stability analysis and <i>optimization</i>'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with envs': {
+    input: `@article{test, title =
+      "Normal and \\em italics and \\begin{bf}bold \\em and italics\\end{bf} {\\bf and bold} and normal"
+    }`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Normal and <i>italics and </i><b>bold </b><i>and italics</i> <b>and bold</b> and normal'
       },
       type: 'article'
     }],
