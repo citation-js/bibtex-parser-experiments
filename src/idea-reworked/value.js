@@ -211,12 +211,17 @@ export const valueGrammar = new Grammar({
 
       // Other text should be lowercased to convert the title-case string to
       // sentence-case. The first letter of the entire string should always be
-      // capitalised.
+      // left as-is.
       } else {
         const text = this.consumeRule('Text')
-        const textLowerCase = text.toLowerCase()
-        // TODO dumb unicode assumptions)
-        output += firstToken ? text[0] + textLowerCase.slice(1) : textLowerCase
+
+        if (firstToken) {
+          // Unicode-safe(?) splitting (as in, accounting for surrogate pairs)
+          const [first, ...rest] = text
+          output += first + rest.join('').toLowerCase()
+        } else {
+          output += text.toLowerCase()
+        }
       }
 
       firstToken = false
@@ -342,8 +347,7 @@ export const valueGrammar = new Grammar({
       return diacritic.normalize('NFC') + text.slice(1)
 
     // escapes
-    // TODO exclude backslash, tilde
-    } else if (/^\W$/.test(command)) {
+    } else if (/^[^A-Za-z\\~]$/.test(command)) {
       return command
 
     // unknown commands
@@ -360,7 +364,10 @@ export const valueGrammar = new Grammar({
       }
 
       if (this.matchToken('command')) {
-        // TODO test for \end{}, \bf etc.
+        const command = this.token.value.slice(1).trimEnd()
+        if (command === 'begin' || command === 'end' || command in constants.formattingEnvs) {
+          break
+        }
       }
 
       output += this.consumeRule('Text')
