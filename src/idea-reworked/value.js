@@ -4,7 +4,13 @@ import * as constants from './constants'
 import { orderNamePieces, formatNameParts, getStringCase } from './name'
 
 const text = {
-  command: /\\(?:[a-z]+|.) */,
+  command: {
+    match: /\\(?:[a-z]+|.) */,
+    type: moo.keywords({
+      commandBegin: '\\begin',
+      commandEnd: '\\end'
+    })
+  },
   lbrace: { match: '{', push: 'bracedLiteral' },
   mathShift: { match: '$', push: 'mathLiteral' },
   whitespace: { match: /[\s~]+/, lineBreaks: true }
@@ -45,6 +51,10 @@ const lexer = moo.states({
     text: /[^{$}\s~\\\^_]+/
   }
 })
+
+function applyFormatting (text, format) {
+  return text && constants.formatting[format].join(text)
+}
 
 export const valueGrammar = new Grammar({
   String () {
@@ -195,39 +205,53 @@ export const valueGrammar = new Grammar({
   },
 
   StringTitleCase () {
+    const topLevel = this.token.offset === 0
     let output = ''
 
-    let firstToken = true
     while (!this.matchEndOfFile()) {
-      // Top-level bracket strings should preserve case, unless the first token
-      // inside is a command. The latter part is handled in BracketStringTitleCase.
-      if (this.matchToken('lbrace')) {
-        output += this.consumeRule('BracketStringTitleCase')
-
-      // If commands are *not* enclosed in brackets, any bracket arguments count
-      // as top-level bracket strings (the same with envs like \em).
-      } else if (this.matchToken('command')) {
-        output += this.consumeRule('CommandTitleCase')
-
-      // Other text should be lowercased to convert the title-case string to
-      // sentence-case. The first letter of the entire string should always be
-      // left as-is.
-      } else {
-        const text = this.consumeRule('Text')
-
-        if (firstToken) {
-          // Unicode-safe(?) splitting (as in, accounting for surrogate pairs)
-          const [first, ...rest] = text
-          output += first + rest.join('').toLowerCase()
-        } else {
-          output += text.toLowerCase()
-        }
+      // In non-top-level calls, return early. Returning early in top-level cases
+      // would work for valid strings but would not error for certain invalid
+      // strings.
+      if (!topLevel && (this.matchToken('commandEnd') || this.matchToken('rbrace'))) {
+        break
       }
 
-      firstToken = false
+      output += this.consumeRule('TextTitleCase')
     }
 
     return output
+  },
+
+  TextTitleCase () {
+    // Top-level bracket strings should preserve case, unless the first token
+    // inside is a command. The latter part is handled in BracketStringTitleCase.
+    if (this.matchToken('lbrace')) {
+      return this.consumeRule('BracketStringTitleCase')
+
+    // If commands are *not* enclosed in brackets, any bracket arguments count
+    // as top-level bracket strings (the same with envs like \em).
+    } else if (this.matchToken('command')) {
+      return this.consumeRule('CommandTitleCase')
+
+    // ...and the same goes for \begin{}...\end{} pairs
+    } else if (this.matchToken('commandBegin')) {
+      return this.consumeRule('EnclosedEnvTitleCase')
+
+    // Other text should be lowercased to convert the title-case string to
+    // sentence-case. The first letter of the entire string should always be
+    // left as-is.
+    } else {
+      const token = this.token
+      const text = this.consumeRule('Text')
+
+      if (token.offset === 0) {
+        // Unicode-safe(?) splitting (as in, accounting for surrogate pairs)
+        const [first, ...rest] = text
+        return first + rest.join('').toLowerCase()
+      } else {
+        return text.toLowerCase()
+      }
+    }
   },
 
   BracketStringTitleCase () {
@@ -251,16 +275,37 @@ export const valueGrammar = new Grammar({
     return caseToPreserve && output ? constants.formatting.nocase.join(output) : output
   },
 
+  EnclosedEnvTitleCase () {
+    this.consumeToken('commandBegin')
+    const beginEnv = this.consumeRule('BracketString')
+    const output = this.consumeRule('StringTitleCase')
+    const end = this.consumeToken('commandEnd')
+    const endEnv = this.consumeRule('BracketString')
+
+    if (beginEnv !== endEnv) {
+      throw new SyntaxError(this.lexer.formatError(
+        end,
+        `environment started with "${beginEnv}", ended with "${endEnv}"`)
+      )
+    }
+
+    return applyFormatting(output, constants.formattingEnvs[beginEnv])
+  },
+
   CommandTitleCase () {
-    // Peaking the token :(
     const command = this.token.value.slice(1).trimEnd()
 
-    // TODO formatting envs
+    // formatting commands
     if (command in constants.formattingCommands) {
       this.consumeToken('command')
       const text = this.consumeRule('BracketStringTitleCase')
-      const markup = constants.formatting[constants.formattingCommands[command]]
-      return markup.join(text)
+      return applyFormatting(text, constants.formattingCommands[command])
+
+    // formatting envs
+    } else if (command in constants.formattingEnvs) {
+      this.consumeToken('command')
+      const text = this.consumeRule('StringTitleCase')
+      return applyFormatting(text, constants.formattingEnvs[command])
 
     // other
     } else {
@@ -310,6 +355,9 @@ export const valueGrammar = new Grammar({
       const token = this.consumeToken('whitespace').value
       return token[0] === '~' ? '\xa0' : ' ' // \xa0 = Non-breakable space
 
+    } else if (this.matchToken('commandBegin')) {
+      return this.consumeRule('EnclosedEnv')
+
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
 
@@ -327,14 +375,14 @@ export const valueGrammar = new Grammar({
     // formatting envs
     if (command in constants.formattingEnvs) {
       const text = this.consumeRule('Env')
-      const markup = constants.formatting[constants.formattingEnvs[command]]
-      return markup.join(text)
+      const format = constants.formattingEnvs[command]
+      return applyFormatting(text, format)
 
     // formatting commands
     } else if (command in constants.formattingCommands) {
       const text = this.consumeRule('BracketString')
-      const markup = constants.formatting[constants.formattingCommands[command]]
-      return markup.join(text)
+      const format = constants.formattingCommands[command]
+      return applyFormatting(text, format)
 
     // commands
     } else if (command in constants.commands) {
@@ -358,21 +406,33 @@ export const valueGrammar = new Grammar({
 
   Env () {
     let output = ''
-    while (!this.matchToken('rbrace')) {
-      if (this.matchEndOfFile()) {
-        break
-      }
-
-      if (this.matchToken('command')) {
-        const command = this.token.value.slice(1).trimEnd()
-        if (command === 'begin' || command === 'end' || command in constants.formattingEnvs) {
-          break
-        }
-      }
-
+    while (!this.matchEndOfFile() && !this.matchToken('rbrace')) {
       output += this.consumeRule('Text')
     }
     return output
+  },
+
+  EnclosedEnv () {
+    this.consumeToken('commandBegin')
+    const beginEnv = this.consumeRule('BracketString')
+
+    let output = ''
+
+    while (!this.matchToken('commandEnd')) {
+      output += this.consumeRule('Text')
+    }
+
+    const end = this.consumeToken('commandEnd')
+    const endEnv = this.consumeRule('BracketString')
+
+    if (beginEnv !== endEnv) {
+      throw new SyntaxError(this.lexer.formatError(
+        end,
+        `environment started with "${beginEnv}", ended with "${endEnv}"`)
+      )
+    }
+
+    return applyFormatting(output, constants.formattingEnvs[beginEnv])
   }
 })
 
