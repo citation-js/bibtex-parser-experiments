@@ -6,6 +6,6 @@
 /src/zotero/grammar.js
 *.old*
 
-/dev.js
+/dev
 /normal_long.bib
 /test.html
