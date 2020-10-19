@@ -148,7 +148,18 @@ export default {
     output: [{
       id: 'test',
       properties: {
-        title: 'Normal and <i>italics and </i><b>bold </b><i>and italics</i> <b>and bold</b> and normal'
+        title: 'Normal and <i>italics and <b>bold <i>and italics</i></b> <b>and bold</b> and normal</i>'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with env overrides': {
+    input: `@article{test, title = "a{\\em a{\\bf a{\\em a}}}" }`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'a<i>a<b>a<i>a</i></b></i>'
       },
       type: 'article'
     }],
