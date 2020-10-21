@@ -143,6 +143,7 @@ see also [the fixture file](test/fixtures/features.js).
 | entry with trailing comma | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string key with colon | ✘ | ✓ | ✘ | ✓ | ✘ | ✓ |
 | entry key with colon | ✓ | ✓ | ✓ | ✘ | ✘ | ✓ |
+| entry value with annotation |   |   |   |   |   |   |
 | entry label with number | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with colon | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | entry label with double quotes | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
@@ -165,8 +166,11 @@ see also [the fixture file](test/fixtures/features.js).
 | entry value with uri fields |   | ✓ |   |   |   |   |
 | entry value with pre-encoded uri fields | ✓ | ✓ | ✓ |   |   | ✓ |
 | entry value with diacritics | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
+| entry value with escapes | ✘ | ✓ | ✘ | ✘ | ✘ | ✘ |
 | entry value with sub/superscript | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
 | entry value with multi-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with verbatim-argument commands | ✘ | ✘ | ✘ | ✘ | ✘ | ✓ |
+| entry value with unbracketed-argument commands | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | TODO |   |   |   |   |   |   |
 | string with lowercase type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | string with mixed-case type | ✘ | ✓ | ✓ | ✓ | ✓ | ✓ |

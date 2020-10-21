@@ -44,6 +44,24 @@ export default {
     input: `@book{a, a:a = "foo" }`,
     output: [{ type: 'book', id: 'a', properties: { 'a:a': 'foo' } }]
   },
+  'entry value with annotation': {
+    input: `@MISC{ann1,
+    AUTHOR = {Last1, First1 and Last2, First2 and Last3, First3},
+    AUTHOR+an = {1:family=student;2=corresponding}
+}`,
+    output: {
+      id: 'ann1',
+      properties: {
+        author: [
+          { family: 'Last1', given: 'First1' },
+          { family: 'Last2', given: 'First2' },
+          { family: 'Last3', given: 'First3' }
+        ]
+      },
+      type: 'misc'
+    },
+    only: 'biblatex'
+  },
 
   // LABELS
   'entry label with number': {
@@ -272,6 +290,27 @@ export default {
   'entry value with multi-argument commands': {
     input: `@article{test, title = {$\\frac 1 2$ and $\\frac{n}{2}$}}`,
     output: [{ id: 'test', properties: { title: '½ and ⁿ⁄₂' }, type: 'article'}]
+  },
+  'entry value with verbatim-argument commands': {
+    input: `@article{test, title = "\\href{http://example.org/{id}}{url}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: '<span class="nocase">http://example.org/{id}</span>'
+      },
+      type: 'article'
+    }]
+  },
+  'entry value with unbracketed-argument commands': {
+    input: `@article{test, title = {Stability analysis and \\emph optimization}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Stability analysis and <i>o</i>ptimization'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
   },
   // TODO
   'TODO': {
