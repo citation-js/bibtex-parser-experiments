@@ -3,10 +3,10 @@ const fs = require('fs')
 const path = require('path')
 
 let parsers = [
-  'current',
-  // 'nearley',
-  'idea',
-  'idea-reworked',
+  'citationjs-old',
+  // 'citationjs-nearley',
+  'citationjs-idea',
+  'citationjs',
   'astrocite',
   'fiduswriter',
   'zotero',

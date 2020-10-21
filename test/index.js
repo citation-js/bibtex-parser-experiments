@@ -11,10 +11,10 @@ global.console = global.logger = {
 const cacheBase = Object.keys(require.cache)
 
 const parsers = [
-  'current',
-  // 'nearley',
-  // 'idea',
-  'idea-reworked',
+  'citationjs-old',
+  // 'citationjs-nearley',
+  // 'citationjs-idea',
+  'citationjs',
   'astrocite',
   'fiduswriter',
   'zotero',

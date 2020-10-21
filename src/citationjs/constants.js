@@ -148,3 +148,32 @@ export const mathScripts = {
     't': '\u209C',
   }
 }
+
+// Adapted from retorquere/bibtex-parser (2020-10-15)
+// https://github.com/retorquere/bibtex-parser/blob/0c8bd92/index.ts#L416-L441
+export const sentenceCaseLanguages = [
+  'american',
+  'british',
+  'canadian',
+  'english',
+  'australian',
+  'newzealand',
+  'usenglish',
+  'ukenglish',
+  'en',
+  'eng',
+  'en-au',
+  'en-bz',
+  'en-ca',
+  'en-cb',
+  'en-gb',
+  'en-ie',
+  'en-jm',
+  'en-nz',
+  'en-ph',
+  'en-tt',
+  'en-us',
+  'en-za',
+  'en-zw',
+  'anglais'
+]

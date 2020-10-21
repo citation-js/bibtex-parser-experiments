@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const http = require('https')
 const util = require('util')
-const constants = require('../lib/idea-reworked/constants')
+const constants = require('../lib/citationjs/constants')
 
 function request (...args) {
   return new Promise((resolve) => http.get(...args, resolve))
@@ -110,7 +110,7 @@ async function main () {
     }
   }
 
-  fs.writeFileSync(path.join(__dirname, '../src/idea-reworked/unicode.json'), JSON.stringify(output))
+  fs.writeFileSync(path.join(__dirname, '../src/citationjs/unicode.json'), JSON.stringify(output))
 }
 
 main().catch(console.error)

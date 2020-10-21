@@ -2,7 +2,7 @@
 /lib
 
 /src/astrocite/grammar.js
-/src/nearley/grammar.js
+/src/citationjs-nearley/grammar.js
 /src/zotero/grammar.js
 *.old*
 

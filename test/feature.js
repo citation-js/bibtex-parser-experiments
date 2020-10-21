@@ -5,8 +5,8 @@ const util = require('util')
 
 const fixtures = Object.entries(require('./fixtures/features').default)
 const parsers = {
-  'current': null,
-  'idea-reworked': null,
+  'citationjs-old': null,
+  'citationjs': null,
   'astrocite': null,
   'fiduswriter': null,
   'zotero': null,
@@ -14,8 +14,8 @@ const parsers = {
   // In progress
   // 'jabref': null,
   // Outdated with distractingly large error output
-  // 'nearley': null,
-  // 'idea': null
+  // 'citationjs-nearley': null,
+  // 'citationjs-idea': null
 }
 const FIXTURE = {
   PASS: '✓',
