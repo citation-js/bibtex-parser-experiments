@@ -486,6 +486,8 @@ function getLexerState (fieldType) {
 export function parse (text, field) {
   const fieldType = constants.fieldTypes[field] || []
   return valueGrammar.parse(lexer.reset(text, {
-    state: getLexerState(fieldType)
+    state: getLexerState(fieldType),
+    line: 0,
+    col: 0
   }), getMainRule(fieldType))
 }
