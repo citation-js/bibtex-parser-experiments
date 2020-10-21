@@ -293,7 +293,7 @@ export const valueGrammar = new Grammar({
   },
 
   CommandTitleCase () {
-    const command = this.token.value.slice(1).trimEnd()
+    const command = this.token.value.slice(1).trim()
 
     // formatting commands
     if (command in constants.formattingCommands) {
@@ -370,7 +370,7 @@ export const valueGrammar = new Grammar({
   },
 
   Command () {
-    const command = this.consumeToken('command').value.slice(1).trimEnd()
+    const command = this.consumeToken('command').value.slice(1).trim()
 
     // formatting envs
     if (command in constants.formattingEnvs) {
@@ -395,7 +395,7 @@ export const valueGrammar = new Grammar({
       return diacritic.normalize('NFC') + text.slice(1)
 
     // escapes
-    } else if (/^[^A-Za-z\\~]$/.test(command)) {
+    } else if (/^[&%$#_{}]$/.test(command)) {
       return command
 
     // unknown commands

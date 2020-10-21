@@ -127,7 +127,7 @@ export const bibtexGrammar = new Grammar({
     this.consumeRule('_')
     const closeBrace = this.consumeToken('rbrace')
     if (closeBrace !== delimiters[openBrace]) {
-      // TODO warn
+      // logger.warn('[plugin-bibtex]', `entry started with "${openBrace}", but ends with "${closeBrace}"`)
     }
 
     return result
