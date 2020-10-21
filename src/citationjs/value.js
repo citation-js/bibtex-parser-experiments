@@ -8,12 +8,19 @@ const text = {
     match: /\\(?:[a-z]+|.) */,
     type: moo.keywords({
       commandBegin: '\\begin',
-      commandEnd: '\\end'
-    })
+      commandEnd: '\\end',
+      escape: ['\\&', '\\%', '\\$', '\\#', '\\_', '\\{', '\\}']
+    }),
+    value: s => s.slice(1).trim()
   },
   lbrace: { match: '{', push: 'bracedLiteral' },
   mathShift: { match: '$', push: 'mathLiteral' },
-  whitespace: { match: /[\s~]+/, lineBreaks: true }
+  whitespace: {
+    match: /[\s~]+/,
+    lineBreaks: true,
+    // \xa0 = Non-breakable space
+    value (token) { return token.includes('~') ? '\xa0' : ' ' }
+  }
 }
 
 const lexer = moo.states({
@@ -53,7 +60,11 @@ const lexer = moo.states({
 })
 
 function applyFormatting (text, format) {
-  return text && constants.formatting[format].join(text)
+  if (format in constants.formatting) {
+    return text && constants.formatting[format].join(text)
+  } else {
+    return text
+  }
 }
 
 export const valueGrammar = new Grammar({
@@ -185,7 +196,7 @@ export const valueGrammar = new Grammar({
   StringVerbatim () {
     let output = ''
     while (!this.matchEndOfFile()) {
-      output += this.consumeToken().value
+      output += this.consumeToken().text
     }
     return output
   },
@@ -293,7 +304,7 @@ export const valueGrammar = new Grammar({
   },
 
   CommandTitleCase () {
-    const command = this.token.value.slice(1).trim()
+    const command = this.token.value
 
     // formatting commands
     if (command in constants.formattingCommands) {
@@ -352,11 +363,13 @@ export const valueGrammar = new Grammar({
       return this.consumeRule('MathString')
 
     } else if (this.matchToken('whitespace')) {
-      const token = this.consumeToken('whitespace').value
-      return token[0] === '~' ? '\xa0' : ' ' // \xa0 = Non-breakable space
+      return this.consumeToken('whitespace').value
 
     } else if (this.matchToken('commandBegin')) {
       return this.consumeRule('EnclosedEnv')
+
+    } else if (this.matchToken('escape')) {
+      return this.consumeToken('escape').value
 
     } else if (this.matchToken('command')) {
       return this.consumeRule('Command')
@@ -370,7 +383,7 @@ export const valueGrammar = new Grammar({
   },
 
   Command () {
-    const command = this.consumeToken('command').value.slice(1).trim()
+    const command = this.consumeToken('command').value
 
     // formatting envs
     if (command in constants.formattingEnvs) {
@@ -393,10 +406,6 @@ export const valueGrammar = new Grammar({
       const text = this.consumeRule('Text')
       const diacritic = text[0] + constants.diacritics[command]
       return diacritic.normalize('NFC') + text.slice(1)
-
-    // escapes
-    } else if (/^[&%$#_{}]$/.test(command)) {
-      return command
 
     // unknown commands
     } else {
