@@ -154,7 +154,10 @@ see also [the fixture file](test/fixtures/features.js).
 | entry value with sentence-casing (real title) | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | entry value with sentence-casing (artificial title) | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✘¹ |
 | entry value with sentence-casing (markup) | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✘¹ |
+| entry value with sentence-casing (env markup) | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✘¹ |
 | entry value with markup | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✓ |
+| entry value with envs | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✘¹ |
+| entry value with env overrides | ✘¹ | ✓ | ✘¹ | ✘¹ | ✘¹ | ✓ |
 | entry value with literal names | ✘ | ✓ | ✘ | ✘ | ✘ | ✓ |
 | entry value with truncated names | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ | ✘¹ |
 | entry value with extended names (biblatex) |   | ✓ |   |   |   | ✓ |
@@ -186,9 +189,9 @@ Data from `npm test`, as [run on Travis CI](https://travis-ci.com/github/citatio
 
 |              | Init             | Time (single entry) | Time (3345 entries) |
 |--------------|-----------------:|--------------------:|--------------------:|
-| current | 0.865ms ± 4.7% | 0.779ms ± 1.5% | 1.81e+3ms ± 4.3% |
-| idea-reworked | 3.86ms ± 2.1% | 0.381ms ± 8.6% | 933ms ± 7.1% |
-| astrocite | 1.74ms ± 2.1% | 0.602ms ± 2.5% | 1.92e+3ms ± 10.0% |
-| fiduswriter | 16.3ms ± 11.3% | 6.74ms ± 25.5% | 1.06e+5ms ± 0.5% |
-| zotero | 4.25ms ± 11.3% | 2.09ms ± 1.2% | 9.92e+3ms ± 0.8% |
-| bbt | 17.7ms ± 14.8% | 2.23ms ± 34.9% | 2.11e+4ms ± 1.8% |
+| current | 0.795ms ± 2.2% | 0.842ms ± 1.6% | 1.97e+3ms ± 5.5% |
+| idea-reworked | 4.42ms ± 2.3% | 0.455ms ± 1.5% | 1.20e+3ms ± 11.7% |
+| astrocite | 1.73ms ± 2.2% | 0.665ms ± 2.3% | 2.17e+3ms ± 7.0% |
+| fiduswriter | 17.7ms ± 12.5% | 7.52ms ± 24.7% | 1.16e+5ms ± 4.0% |
+| zotero | 4.16ms ± 12.1% | 2.13ms ± 1.3% | 1.00e+4ms ± 0.8% |
+| bbt | 21.7ms ± 23.4% | 1.55ms ± 6.5% | 2.27e+4ms ± 5.4% |
