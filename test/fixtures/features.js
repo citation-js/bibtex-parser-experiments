@@ -249,6 +249,16 @@ export default {
       type: 'article'
     }]
   },
+  'entry value with escapes': {
+    input: `@article{test, title={a\\&b\\%c\\$d\\#e\\_f\\textasciitilde{}\\textasciicircum{}\\textbackslash{}}}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'a&b%c$d#e_f~^\\'
+      },
+      type: 'article'
+    }]
+  },
   'entry value with sub/superscript': {
     input: `@article{test, publisher = {Dead Po$_{eee}$t Society}}`,
     output: [{
