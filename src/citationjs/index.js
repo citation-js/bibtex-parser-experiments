@@ -217,7 +217,7 @@ export const bibtexGrammar = new Grammar({
     }
   }
 }, {
-  strings: { ...defaultStrings }
+  strings: defaultStrings
 })
 
 export function parse (text) {

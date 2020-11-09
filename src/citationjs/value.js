@@ -29,7 +29,7 @@ const lexer = moo.states({
     text: /[^{$}\s~\\]+/
   },
   namesLiteral: {
-    and: ' and ',
+    and: /\s+and\s+/,
     comma: ',',
     hyphen: '-',
     equals: '=',
@@ -37,7 +37,7 @@ const lexer = moo.states({
     text: /[^{$}\s~\\,=-]+/
   },
   listLiteral: {
-    and: ' and ',
+    and: /\s+and\s+/,
     ...text,
     text: /[^{$}\s~\\]+/
   },
@@ -445,9 +445,24 @@ export const valueGrammar = new Grammar({
   }
 })
 
-function getMainRule (fieldType) {
+function isEnglIsh (languages) {
+  return languages.every(
+    language => constants.sentenceCaseLanguages.includes(language)
+  )
+}
+
+function getMainRule (fieldType, languages) {
   if (fieldType[1] === 'name') {
     return fieldType[0] === 'list' ? 'StringNames' : 'Name'
+  }
+
+  if (fieldType[1] === 'title') {
+    const option = 'force' // config.parse.sentenceCase
+    if (option === 'force' || (option === 'english' && isEnglIsh(languages))) {
+      return 'StringTitleCase'
+    } else {
+      return 'String'
+    }
   }
 
   switch (fieldType[0] === 'field' ? fieldType[1] : fieldType[0]) {
@@ -460,7 +475,6 @@ function getMainRule (fieldType) {
     case 'uri':
       return 'StringUri'
     case 'title':
-      return 'StringTitleCase'
     case 'literal':
     default:
       return 'String'
@@ -483,11 +497,11 @@ function getLexerState (fieldType) {
   }
 }
 
-export function parse (text, field) {
+export function parse (text, field, languages = []) {
   const fieldType = constants.fieldTypes[field] || []
   return valueGrammar.parse(lexer.reset(text, {
     state: getLexerState(fieldType),
     line: 0,
     col: 0
-  }), getMainRule(fieldType))
+  }), getMainRule(fieldType, languages))
 }
