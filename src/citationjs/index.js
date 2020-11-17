@@ -11,7 +11,7 @@ const whitespace = {
 
 const lexer = moo.states({
   main: {
-    junk: { match: /@comment.+|[^@]+/, lineBreaks: true },
+    junk: { match: /@[cC][oO][mM][mM][eE][nN][tT].+|[^@]+/, lineBreaks: true },
     at: { match: '@', push: 'entry' }
   },
   entry: {
