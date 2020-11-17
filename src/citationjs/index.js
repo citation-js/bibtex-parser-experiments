@@ -3,7 +3,7 @@ import { Grammar } from './grammar'
 import { defaultStrings } from './constants'
 import { parse as parseValue } from './value'
 
-const identifier = /[a-zA-Z][a-zA-Z0-9_:-]*/
+const identifier = /[a-zA-Z_][a-zA-Z0-9_:-]*/
 const whitespace = {
   comment: /%.*/,
   whitespace: { match: /\s+/, lineBreaks: true }
