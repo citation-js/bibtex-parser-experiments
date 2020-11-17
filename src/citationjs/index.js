@@ -49,7 +49,7 @@ const lexer = moo.states({
   quotedLiteral: {
     lbrace: { match: '{', push: 'bracedLiteral' },
     quote: { match: '"', pop: true },
-    text: { match: /[^{"]+/, lineBreaks: true }
+    text: { match: /(?:\\[\\{]|[^{"])+/, lineBreaks: true }
   },
   bracedLiteral: {
     lbrace: { match: '{', push: 'bracedLiteral' },
