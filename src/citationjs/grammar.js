@@ -30,6 +30,7 @@ export class Grammar {
   parse (iterator, mainRule) {
     this.lexer = iterator
     this.token = this.lexer.next()
+    this.log = []
     return this.consumeRule(mainRule || this.mainRule)
   }
 
