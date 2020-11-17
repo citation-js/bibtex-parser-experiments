@@ -216,7 +216,7 @@ export const valueGrammar = new Grammar({
   },
 
   StringTitleCase () {
-    const topLevel = this.token.offset === 0
+    const topLevel = this.token && this.token.offset === 0
     let output = ''
 
     while (!this.matchEndOfFile()) {
