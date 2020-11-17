@@ -383,7 +383,8 @@ export const valueGrammar = new Grammar({
   },
 
   Command () {
-    const command = this.consumeToken('command').value
+    const commandToken = this.consumeToken('command')
+    const command = commandToken.value
 
     // formatting envs
     if (command in constants.formattingEnvs) {
@@ -407,9 +408,13 @@ export const valueGrammar = new Grammar({
       const diacritic = text[0] + constants.diacritics[command]
       return diacritic.normalize('NFC') + text.slice(1)
 
+    // escaped characters
+    } else if (command.match(/^[&]$/)) {
+      return commandToken.text.slice(1)
+
     // unknown commands
     } else {
-      return '\\' + command
+      return commandToken.text
     }
   },
 
