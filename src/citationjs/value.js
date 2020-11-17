@@ -16,10 +16,10 @@ const text = {
   lbrace: { match: '{', push: 'bracedLiteral' },
   mathShift: { match: '$', push: 'mathLiteral' },
   whitespace: {
-    match: /[\s~]+/,
+    match: /[\s]+|~/,
     lineBreaks: true,
     // \xa0 = Non-breakable space
-    value (token) { return token.includes('~') ? '\xa0' : ' ' }
+    value (token) { return token === '~' ? '\xa0' : ' ' }
   }
 }
 
