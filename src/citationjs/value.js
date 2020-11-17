@@ -5,7 +5,7 @@ import { orderNamePieces, formatNameParts, getStringCase } from './name'
 
 const text = {
   command: {
-    match: /\\(?:[a-z]+|.) */,
+    match: /\\(?:[a-zA-Z]+|.) */,
     type: moo.keywords({
       commandBegin: '\\begin',
       commandEnd: '\\end',
