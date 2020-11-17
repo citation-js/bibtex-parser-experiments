@@ -78,7 +78,7 @@ export const formatting = {
   bold: ['<b>', '</b>'],
   superscript: ['<sup>', '</sup>'],
   subscript: ['<sub>', '</sub>'],
-  smallcaps: ['<span style="font-variant: small-caps;">', '</span>'],
+  smallcaps: ['<span style="font-variant:small-caps;">', '</span>'],
   nocase: ['<span class="nocase">', '</span>']
 }
 
