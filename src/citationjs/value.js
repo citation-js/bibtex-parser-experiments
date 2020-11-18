@@ -271,19 +271,19 @@ export const valueGrammar = new Grammar({
     this.consumeToken('lbrace')
 
     const preserveCase = !this.matchToken('command')
-    let caseToPreserve = preserveCase
+    let caseToPreserve = false
 
     while (!this.matchToken('rbrace')) {
       const text = this.consumeRule('Text')
       const textLowerCase = text.toLowerCase()
 
-      caseToPreserve = caseToPreserve && text === textLowerCase
+      caseToPreserve = caseToPreserve || /\b[a-z]/.test(text)
       output += preserveCase ? text : textLowerCase
     }
 
     this.consumeToken('rbrace')
 
-    return caseToPreserve && output ? constants.formatting.nocase.join(output) : output
+    return preserveCase && caseToPreserve ? applyFormatting(output, 'nocase') : output
   },
 
   EnclosedEnvTitleCase () {
