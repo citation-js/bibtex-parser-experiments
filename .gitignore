@@ -4,6 +4,7 @@
 /src/astrocite/grammar.js
 /src/citationjs-nearley/grammar.js
 /src/zotero/grammar.js
+/test/fixtures/bbt.json
 *.old*
 
 /dev
