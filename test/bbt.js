@@ -51,16 +51,22 @@ for (const name in fixtures) {
   const fixture = fixtures[name]
 
   if (ignore.has(name)) {
-    console.log(`========== ${name}: \u001b[31mskipped\u001b[0m`)
+    console.log(`[\u001b[31mSKIP\u001b[0m] ${name}`)
     continue
   }
 
   try {
     const result = parser._intoFixtureOutput(parser.parse(fixture.input))
     assert.deepEqual(result, fixture.output)
-    console.log(`========== ${name}: \u001b[32mpassed\u001b[0m`)
+    if (ignore.has(name)) {
+      console.log(`[\u001b[34mPASS\u001b[0m] ${name}`)
+    } else {
+      console.log(`[\u001b[32mPASS\u001b[0m] ${name}`)
+    }
   } catch (e) {
-    console.log(`========== ${name} \u001b[31m==========\u001b[0m`)
+    console.log()
+    console.log(`[\u001b[31mFAIL\u001b[0m] ${name}`)
+    console.log('============================================')
     console.error(e.message)
     console.log()
     console.log()
