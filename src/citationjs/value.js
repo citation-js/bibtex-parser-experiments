@@ -347,9 +347,24 @@ export const valueGrammar = new Grammar({
           const formatName = constants.mathScriptFormatting[script]
           output += constants.formatting[formatName].join(text.join(''))
         }
-      } else {
-        output += this.consumeRule('Text')
+
+        continue
       }
+
+      if (this.matchToken('command')) {
+        const command = this.token.value
+        if (command in constants.mathScriptFormatting) {
+          this.consumeRule('command')
+          const text = this.consumeRule('BracketString')
+          output += applyFormatting(text, constants.mathScriptFormatting[command])
+          continue
+        } else if (command === 'frac') {
+          // TODO
+          continue
+        }
+      }
+
+      output += this.consumeRule('Text')
     }
     this.consumeToken('mathShift')
     return output
@@ -409,8 +424,21 @@ export const valueGrammar = new Grammar({
       return diacritic.normalize('NFC') + text.slice(1)
 
     // escaped characters
-    } else if (command.match(/^[&]$/)) {
+    } else if (command.match(/^[&%]$/)) {
       return commandToken.text.slice(1)
+
+    // argument commands
+    } else if (command in constants.argumentCommands) {
+      const func = constants.argumentCommands[command]
+      const args = []
+      let arity = func.length
+
+      while (arity-- > 0) {
+       this.consumeToken('whitespace', true)
+       args.push(this.consumeRule('BracketString'))
+      }
+
+      return func(...args)
 
     // unknown commands
     } else {

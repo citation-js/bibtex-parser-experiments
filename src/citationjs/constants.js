@@ -1,3 +1,7 @@
+const EMPTY = () => ''
+const EMPTY_MONAD = _ => ''
+const NOOP_MONAD = _ => _
+
 // Adapted from plk/biblatex (accessed 2019-09-15)
 export { default as fieldTypes } from './fieldTypes.json'
 
@@ -53,7 +57,12 @@ export const formattingEnvs = {
   bfseries: 'bold',
 
   sc: 'smallcaps',
-  scshape: 'smallcaps'
+  scshape: 'smallcaps',
+
+  // Font selection
+  rm: undefined,
+  sf: undefined,
+  tt: undefined
 }
 
 export const formattingCommands = {
@@ -70,7 +79,17 @@ export const formattingCommands = {
   textsc: 'smallcaps',
 
   textsuperscript: 'superscript',
-  textsubscript: 'subscript'
+  textsubscript: 'subscript',
+
+  enquote: 'quotes',
+  mkbibquote: 'quotes',
+
+  // Font selection
+  textmd: undefined,
+  textrm: undefined,
+  textsf: undefined,
+  texttt: undefined,
+  textup: undefined
 }
 
 export const formatting = {
@@ -79,7 +98,47 @@ export const formatting = {
   superscript: ['<sup>', '</sup>'],
   subscript: ['<sub>', '</sub>'],
   smallcaps: ['<span style="font-variant:small-caps;">', '</span>'],
-  nocase: ['<span class="nocase">', '</span>']
+  nocase: ['<span class="nocase">', '</span>'],
+  quotes: ['\u201C', '\u201D']
+}
+
+// Partly adapted from retorquere/bibtex-parser (2020-11-16)
+// https://github.com/retorquere/bibtex-parser/blob/7ad73df/index.ts
+export const argumentCommands = {
+  ElsevierGlyph (glyph) { return String.fromCharCode(parseInt(glyph, 16)) },
+  href (url, text) { return text === url ? url : `${text} (${url})` },
+  par () { return '\n\n' },
+  path (path) { return path },
+  url (url) { return url },
+
+  // Custom: \item
+  // Custom envs: \verb
+
+  // Return one argument
+  bibcyr: NOOP_MONAD,
+  bibstring: NOOP_MONAD,
+  cite: NOOP_MONAD,
+  chsf: NOOP_MONAD,
+  hspace: NOOP_MONAD,
+  mathrm: NOOP_MONAD,
+  mbox: NOOP_MONAD,
+  // ocirc: NOOP_MONAD,
+  section: NOOP_MONAD,
+  subsection: NOOP_MONAD,
+  subsubsection: NOOP_MONAD,
+  subsubsubsection: NOOP_MONAD,
+  textrm: NOOP_MONAD,
+
+  // Return nothing
+  aftergroup: EMPTY,
+  cyr: EMPTY,
+  ignorespaces: EMPTY,
+  left: EMPTY,
+  noopsort: EMPTY_MONAD,
+  relax: EMPTY,
+  right: EMPTY,
+  vphantom: EMPTY_MONAD,
+  vspace: EMPTY_MONAD
 }
 
 export const ligaturePattern = /---?|''|``|~/g
@@ -94,7 +153,12 @@ export const ligatures = {
 
 export const mathScriptFormatting = {
   '^': 'superscript',
-  '_': 'subscript'
+  sp: 'superscript',
+
+  '_': 'subscript',
+  sb: 'subscript',
+
+  mathrm: undefined
 }
 
 export const mathScripts = {
