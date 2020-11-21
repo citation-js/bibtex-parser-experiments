@@ -1,6 +1,6 @@
 import moo from 'moo'
 import { Grammar } from './grammar'
-import { defaultStrings } from './constants'
+import { fieldTypes, defaultStrings } from './constants'
 import { parse as parseValue } from './value'
 
 const identifier = /[a-zA-Z_][a-zA-Z0-9_:-]*/
@@ -158,7 +158,11 @@ export const bibtexGrammar = new Grammar({
     this.consumeToken('equals')
     this.consumeRule('_')
 
-    const value = this.consumeRule('Expression')
+    let value = this.consumeRule('Expression')
+
+    if (fieldTypes[field]?.[1] === 'title' && this.state.bracketStringLength === value.length) {
+      value = value.slice(1, -1)
+    }
 
     return [field, value]
   },
@@ -211,7 +215,9 @@ export const bibtexGrammar = new Grammar({
 
   Text () {
     if (this.matchToken('lbrace')) {
-      return `{${this.consumeRule('BracketString')}}`
+      const bracketString = `{${this.consumeRule('BracketString')}}`
+      this.state.bracketStringLength = bracketString.length
+      return bracketString
     } else {
       return this.consumeToken('text').value
     }

@@ -106,9 +106,9 @@ export const formatting = {
 // https://github.com/retorquere/bibtex-parser/blob/7ad73df/index.ts
 export const argumentCommands = {
   ElsevierGlyph (glyph) { return String.fromCharCode(parseInt(glyph, 16)) },
-  href (url, text) { return text === url ? url : `${text} (${url})` },
+  href (url, text) { return url },
   par () { return '\n\n' },
-  path (path) { return path },
+  // path (path) { return path },
   url (url) { return url },
 
   // Custom: \item
@@ -130,15 +130,19 @@ export const argumentCommands = {
   textrm: NOOP_MONAD,
 
   // Return nothing
+  noopsort: EMPTY_MONAD,
+  // vphantom: EMPTY_MONAD,
+  vspace: EMPTY_MONAD,
+
+  // Move later
   aftergroup: EMPTY,
   cyr: EMPTY,
   ignorespaces: EMPTY,
   left: EMPTY,
-  noopsort: EMPTY_MONAD,
   relax: EMPTY,
   right: EMPTY,
-  vphantom: EMPTY_MONAD,
-  vspace: EMPTY_MONAD
+  '\\': EMPTY,
+  LaTeX () { return 'LaTeX' }
 }
 
 export const ligaturePattern = /---?|''|``|~/g
