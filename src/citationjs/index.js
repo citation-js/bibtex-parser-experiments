@@ -138,7 +138,7 @@ export const bibtexGrammar = new Grammar({
 
     while (this.matchToken('identifier')) {
       let [field, value] = this.consumeRule('Field')
-      properties[field] = typeof value === 'number' ? value : parseValue(value, field)
+      properties[field] = value
 
       this.consumeRule('_')
       if (this.consumeToken('comma', true)) {
@@ -146,6 +146,15 @@ export const bibtexGrammar = new Grammar({
       } else {
         break
       }
+    }
+
+    if (properties.language) {
+      properties.language = parseValue(properties.language, 'language')
+    }
+
+    for (const field in properties) {
+      if (typeof properties[field] === 'number') { continue }
+      properties[field] = parseValue(properties[field], field, properties.language)
     }
 
     return properties
@@ -183,7 +192,8 @@ export const bibtexGrammar = new Grammar({
 
   ExpressionPart () {
     if (this.matchToken('identifier')) {
-      return this.state.strings[this.consumeToken('identifier').value.toLowerCase()] || ''
+      const string = this.consumeToken('identifier').value
+      return this.state.strings[string.toLowerCase()] || string
     } else if (this.matchToken('number')) {
       return parseInt(this.consumeToken('number'))
     } else if (this.matchToken('quote')) {

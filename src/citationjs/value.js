@@ -415,9 +415,12 @@ export const valueGrammar = new Grammar({
 })
 
 function isEnglIsh (languages) {
-  return languages.every(
-    language => constants.sentenceCaseLanguages.includes(language)
-  )
+  if (Array.isArray(languages)) {
+    return languages.every(
+      language => constants.sentenceCaseLanguages.includes(language)
+    )
+  }
+  return constants.sentenceCaseLanguages.includes(languages)
 }
 
 function getMainRule (fieldType, languages) {
