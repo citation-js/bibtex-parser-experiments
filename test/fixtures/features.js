@@ -148,6 +148,28 @@ export default {
     }],
     gimmick: 'REPRESENTATION'
   },
+  'entry value with sentence-casing and nested nocase': {
+    input: `@article{test, title = "Abc {Def {Ghi jkl} Mno}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Abc <span class="nocase">Def Ghi jkl Mno</span>'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
+  'entry value with ignored nocase': {
+    input: `@article{test, title = "{Abc Def Ghi}"}`,
+    output: [{
+      id: 'test',
+      properties: {
+        title: 'Abc def ghi'
+      },
+      type: 'article'
+    }],
+    gimmick: 'REPRESENTATION'
+  },
   'entry value with markup': {
     input: `@article{test, title = {Stability analysis and {\\emph{optimization}}}}`,
     output: [{
